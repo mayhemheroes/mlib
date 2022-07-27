@@ -1,8 +1,12 @@
-FROM --platform=linux/amd64 ubuntu:20.04
+FROM --platform=linux/amd64 ubuntu:20.04 as builder
 
 RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential
 
-ADD . /repo
+COPY . /repo
 WORKDIR /repo
 RUN gcc -o string example/ex-string01.c -I.
+
+FROM ubuntu:20.04 as package
+
+COPY --from=builder /repo/string /
