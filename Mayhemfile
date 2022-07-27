@@ -1,6 +1,5 @@
-project: rnshah9/mlib
+project: mlib
 target: string
-tests: null
 
 cmds:
-  - cmd: /repo/string @@
+  - cmd: /string @@
