@@ -2304,7 +2304,7 @@ static inline bool
 m_core_parse_char (char *ptr, const char str[], const char **endptr)
 {
     *ptr = *str++;
-    if (endptr != NULL) *endptr = str;
+    if (endptr != NULL) { *endptr = str; }
     return true;
 }
 
@@ -2313,7 +2313,7 @@ m_core_parse_bool (bool *ptr, const char str[], const char **endptr)
 {
   char c = *str++;
   *ptr = (c == '1');
-  if (endptr != NULL) *endptr = str;
+  if (endptr != NULL) { *endptr = str; }
   return (c == '0' || c == '1');
 }
 
@@ -2323,7 +2323,7 @@ m_core_parse_bool (bool *ptr, const char str[], const char **endptr)
   {                                                                           \
     char *end;                                                                \
     *ptr = (type) parse_func (str, &end extra_arg);                           \
-    if (endptr != NULL) *endptr = end;                                        \
+    if (endptr != NULL) { *endptr = end; }                                    \
     return end != str;                                                        \
     }
 
@@ -3991,9 +3991,9 @@ m_core_parse2_enum (const char str[], const char **endptr)
 #define M_EMPLACE_LIST_TYPE_VAR_MULTI(prefix, emplace_type)                   \
   M_MAP3(M_EMPLACE_LIST_TYPE_VAR_MULTI_F, prefix, M_ID emplace_type)
 #define M_EMPLACE_LIST_TYPE_VAR_MULTI_F(prefix, num, type)                    \
-  , type M_C(prefix, num)
+  , type const M_C(prefix, num)
 #define M_EMPLACE_LIST_TYPE_VAR_SINGLE(prefix, emplace_type)                  \
-  , emplace_type prefix
+  , emplace_type const prefix
 
 
 /* Expand to the list of variable name based on the the declaration with
@@ -4010,13 +4010,14 @@ m_core_parse2_enum (const char str[], const char **endptr)
    or with the user provided init_func */
 #define M_EMPLACE_CALL_FUNC(prefix, init_func, oplist, dest, emplace_type)    \
   M_IF(M_KEYWORD_P(INIT_WITH, init_func))                                     \
-  (                                                                           \
+  (M_EMPLACE_CALL_FUNC_INIT_WITH, M_EMPLACE_CALL_FUNC_USER_PROVIDED)          \
+  (prefix, init_func, oplist, dest, emplace_type)
+#define M_EMPLACE_CALL_FUNC_INIT_WITH(prefix, init_func, oplist, dest, emplace_type) \
    /* If INIT_FUNC==INIT_WITH, classic use of INIT_WITH operator */           \
-   M_CALL_INIT_WITH(oplist, dest M_EMPLACE_LIST_VAR(prefix, emplace_type) )   \
-   ,                                                                          \
+   M_CALL_INIT_WITH(oplist, dest M_EMPLACE_LIST_VAR(prefix, emplace_type) )
+#define M_EMPLACE_CALL_FUNC_USER_PROVIDED(prefix, init_func, oplist, dest, emplace_type) \
    /* Use the user provided init_func instead (with API transformation) */    \
-   M_APPLY_API(init_func, oplist, dest M_EMPLACE_LIST_VAR(prefix, emplace_type) ) \
-                                                                        )
+   M_APPLY_API(init_func, oplist, dest M_EMPLACE_LIST_VAR(prefix, emplace_type) )
 
 /* Generate one or several definitions for the EMPLACE methods
    using the operator EMPLACE_TYPE to get the suitable user types

@@ -100,6 +100,7 @@ The following headers define containers that don't require the user structure to
 * [m-dict.h](#m-dict): header for creating generic dictionary or set of generic type (and of variable kind),
 * [m-rbtree.h](#m-rbtree): header for creating binary sorted tree of generic type,
 * [m-bptree.h](#m-bptree): header for creating B+TREE of generic type,
+* [m-tree.h](#m-tree): header for creating generic tree of generic type,
 * [m-tuple.h](#m-tuple): header for creating arbitrary tuple of generic type,
 * [m-variant.h](#m-variant): header for creating arbitrary variant of generic type,
 * [m-prioqueue.h](#m-prioqueue): header for creating priority queue of generic type and of variable size,
@@ -380,7 +381,7 @@ Or even shorter when you're comfortable enough with the library:
         
         int main(void) {
           // Let's define & init 'z1=42' and 'z2=17' to be 'mpz_t'
-          M_LET ((z1,42), (z2,17), mpz_t)
+          M_LET ((z1,(42)), (z2,(17)), mpz_t)
             // Let's define 'array' as an 'array_mpz_t' with 'z1' and 'z2'
             M_LET((array,z1,z2), array_mpz_t) {
              // Let's iterate over all items of the container
@@ -1172,12 +1173,13 @@ This method is only created only if the INIT method is provided.
 This pointer remains valid until the array is modified by another method.
 This pointer should not be stored in a global variable.
 
-##### void name\_erase(name\_t container, const size\_t key)
-##### void name\_erase(name\_t container, const type\_t key) [for set]
-##### void name\_erase(name\_t container, const key\_type\_t key) [for associative array]
+##### bool name\_erase(name\_t container, const size\_t key)
+##### bool name\_erase(name\_t container, const type\_t key) [for set]
+##### bool name\_erase(name\_t container, const key\_type\_t key) [for associative array]
 
 Remove the element referenced by the key 'key' in the container 'container'.
 Do nothing if 'key' is no present in the container.
+Return true if the key was present and erased, false otherwise.
 
 ##### size\_t name\_size(const name\_t container)
 
@@ -1443,9 +1445,8 @@ Example:
 ```
 
 
-#### Created methods
+#### Created types
 
-In the following methods, name stands for the name given to the macro that is used to identify the type.
 The following types are automatically defined by the previous definition macro if not provided by the user:
 
 #### name\_t
@@ -1455,6 +1456,8 @@ Type of the list of 'type' objects.
 #### name\_it\_t
 
 Type of an iterator over this list.
+
+#### Generic methods
 
 The following methods of the generic interface are defined (See generic interface for details):
 
@@ -1495,6 +1498,8 @@ The following methods of the generic interface are defined (See generic interfac
 * bool name\_in\_str(name\_t list, FILE *file)
 * bool name\_equal\_p(const name\_t list1, const name\_t list2)
 * size\_t name\_hash(const name\_t list)
+
+#### Specialized methods
 
 The following specialized methods are  automatically created by the previous definition macro:
 
@@ -1596,9 +1601,8 @@ Example:
 ```
 
 
-#### Created methods
+#### Created types
 
-In the following methods, name stands for the name given to the macro that is used to identify the type.
 The following types are automatically defined by the previous definition macro if not provided by the user:
 
 #### name\_t
@@ -1608,6 +1612,8 @@ Type of the list of 'type'.
 #### name\_it\_t
 
 Type of an iterator over this list.
+
+#### Generic methods
 
 The following methods of the generic interface are defined (See generic interface for details):
 
@@ -1652,6 +1658,8 @@ The following methods of the generic interface are defined (See generic interfac
 * bool name\_in\_str(name\_t list, FILE *file)
 * bool name\_equal\_p(const name\_t list1, const name\_t list2)
 * size\_t name\_hash(const name\_t list)
+
+#### Specialized methods
 
 The following specialized methods are automatically created by the previous definition macro:
 
@@ -1750,10 +1758,7 @@ Example:
 ```
 
 
-#### Created methods
-
-In the following methods, name stands for the name given to the macro.
-This is used to identify the type.
+#### Created types
 
 The following types are automatically defined by the previous definition macro if not provided by the user:
 
@@ -1764,6 +1769,8 @@ Type of the array of 'type'.
 #### name\_it\_t
 
 Type of an iterator over this array.
+
+#### Generic methods
 
 The following methods of the generic interface are defined (See generic interface for details):
 
@@ -1812,6 +1819,8 @@ The following methods of the generic interface are defined (See generic interfac
 ##### bool name\_in\_str(name\_t array, FILE *file)
 ##### bool name\_equal\_p(const name\_t array1, const name\_t array2)
 ##### size\_t name\_hash(const name\_t array)
+
+#### Specialized methods
 
 The following specialized methods are automatically created by the previous definition macro:
 
@@ -1941,9 +1950,7 @@ Example:
 Return the oplist of the deque defined by calling DEQUE\_DEF with name & oplist. 
 
 
-#### Created methods
-
-In the following methods, name stands for the name given to the macro that is used to identify the type.
+#### Created types
 
 The following types are automatically defined by the previous definition macro if not provided by the user:
 
@@ -1954,6 +1961,8 @@ Type of the deque of 'type'.
 #### name\_it\_t
 
 Type of an iterator over this deque.
+
+#### Generic methods
 
 The following methods of the generic interface are defined (See generic interface for details):
 
@@ -2234,9 +2243,7 @@ except the name of the types name\_t, name\_it\_t are provided.
 Return the oplist of the set defined by calling DICT\_SET\_DEF (or DICT\_OASET\_DEF) with name & key\_oplist.
 
 
-#### Created methods
-
-In the following methods, name stands for the name given to the macro that is used to identify the type.
+#### Created types
 
 The following types are automatically defined by the previous definition macro if not provided by the user:
 
@@ -2256,6 +2263,8 @@ Type of one item referenced in the dictionary for associative array.
 It is a structure composed of the key (field 'key') and the value (field 'value').
 This type is created only for associative arrays (\_DEF2 suffix) and not for sets.
 
+#### Generic methods
+
 The following methods of the generic interface are defined (See generic interface for details):
 
 * void name\_init(name\_t dict)
@@ -2271,7 +2280,7 @@ The following methods of the generic interface are defined (See generic interfac
 * value\_type *name\_safe\_get(name\_t dict, const key\_type key)
 * void name\_set\_at(name\_t dict, const key\_type key, const value\_type value)   [for associative array]
 * void name\_push(name\_t dict, const key\_type key)       [for dictionary set]
-* void name\_erase(name\_t dict, const key\_type key)
+* bool name\_erase(name\_t dict, const key\_type key)
 * void name\_it(name\_it\_t it, name\_t dict)
 * void name\_it\_set(name\_it\_t it, const name\_it\_t ref)
 * bool name\_end\_p(const name\_it\_t it)
@@ -2286,6 +2295,8 @@ The following methods of the generic interface are defined (See generic interfac
 * void name\_out\_str(FILE *file, const name\_t dict)
 * bool name\_in\_str(name\_t dict, FILE *file)
 * bool name\_equal\_p(const name\_t dict1, const name\_t dict2)
+
+#### Specialized methods
 
 The following specialized methods are automatically created by the previous definition macro:
 
@@ -2371,15 +2382,15 @@ Example:
 
 Return the oplist of the tuple defined by calling TUPLE\_DEF2 with the given name & the Oplist.
 
-#### Created methods
-
-In the following methods, name stands for the name given to the macro that is used to identify the type.
+#### Created types
 
 The following type is automatically defined by the previous definition macro if not provided by the user:
 
 #### name\_t
 
 Type of the defined tuple.
+
+#### Generic methods
 
 The following methods of the generic interface are defined (See generic interface for details):
 
@@ -2397,6 +2408,8 @@ The following methods of the generic interface are defined (See generic interfac
 * size\_t name\_hash(const name\_t tuple)
 * int name\_equal\_p(const name\_t tuple1, const name\_t tuple2)
 * int name\_cmp(const name\_t tuple1, const name\_t tuple2)
+
+#### Specialized methods
 
 The following specialized methods are automatically created by the previous definition macro:
 
@@ -2441,28 +2454,40 @@ This method is created only if the oplist of element1 defines the CMP method.
 
 ### M-VARIANT
 
-A [variant](https://en.wikipedia.org/wiki/Variant_type) is a finite exclusive list of elements of different types :
-the variant can be only equal to one element at a time. 
+A [variant](https://en.wikipedia.org/wiki/Variant_type) is a finite exclusive list of elements of different types:
+the variant can only be equal to one element at a time.
 
 #### VARIANT\_DEF2(name, (element1, type1[, oplist1]) [, ...])
 #### VARIANT\_DEF2\_AS(name,  name\_t, (element1, type1[, oplist1]) [, ...])
 
 VARIANT\_DEF2 defines the variant 'name##\_t' and its associated methods as "static inline" functions.
 Each parameter of the macro is expected to be an element of the variant.
-Each element is defined by three parameters within parenthesis: 
-the element name, the element type and the element oplist.
-'name' and 'element' shall be a C identifier that will be used to identify the container.
+Each element is defined by three parameters within parenthesis:
+* the mandatory element name,
+* the mandatory element type
+* and the optional element oplist.
+
+If an 'oplist' is given, it shall be the one matching the associated type.
+'name' and 'element<n>' shall be C identifiers that will be used to identify the list.
+'name' will be used to create all the types (including the iterator)
+and functions to handle the container.
+This definition shall be done once per name and per compilation unit.
 
 This is like a C union. The main added value compared to using a union
 is that it generates all the basic methods to handle it and it dynamically
 identifies which element is stored within.
+It is also able to store an 'EMPTY' state for the variant, contrary to an union
+(this is the state when default constructing it).
 
-It shall be done once per type and per compilation unit.
+The oplists shall have at least the following operators (INIT\_SET, SET and CLEAR),
+otherwise it won't generate compilable code.
+In general, an optional method of the variant will only be created
+if all oplists define the needed optional methods for the underlying type.
 
-The object oplist is expected to have at least the following operators (INIT\_SET, SET and CLEAR),
-otherwise default methods are used. If there is no given oplist, the basic oplist for basic C types is used
-or a globally registered oplist is used.
-The created methods will use the operators to init, set and clear the contained object.
+VARIANT\_DEF2\_AS is the same as VARIANT\_DEF2 except the name of the type name\_t
+is provided.
+
+name\_parse\_str & name\_in\_str depend also on the INIT operator.
 
 Example:
 
@@ -2492,64 +2517,58 @@ Example:
 	}
 ```
 
-VARIANT\_DEF2\_AS is the same as VARIANT\_DEF2 except the name of the type name\_t
-is provided.
-
 
 #### VARIANT\_OPLIST(name, oplist1[, ...] )
 
-Return the oplist of the variant defined by calling VARIANT\_DEF2 with the given name & the Oplist.
+Return the oplist of the variant defined by calling VARIANT\_DEF2 with the given name & the Oplists used to generate it.
 
-#### Created methods
+#### Created types
 
-In the following methods, name stands for the name given to the macro that is used to identify the type.
-The following types / methods are automatically defined by the previous macro:
+The following type is automatically defined by the previous definition macro if not provided by the user:
 
 #### name\_t
 
 Type of the defined variant.
 
-##### void name\_init(name\_t variant)
+#### Generic methods
 
-Initialize the variant 'variant' (aka constructor) to be empty.
+The following methods of the generic interface are defined (See generic interface for details):
 
-##### void name\_init\_set(name\_t variant, const name\_t ref)
+* void name\_init(name\_t variant)
+* void name\_init\_set(name\_t variant, const name\_t ref)
+* void name\_set(name\_t variant, const name\_t ref)
+* void name\_init\_move(name\_t variant, name\_t ref)
+* void name\_move(name\_t variant, name\_t ref)
+* void name\_clear(name\_t variant)
+* void name\_reset(name\_t variant)
+* bool name\_empty\_p(const name\_t variant)
+* size\_t name\_hash(const name\_t variant)
+* bool name\_equal\_p(const name\_t variant1, const name\_t variant2)
+* void name\_swap(name\_t variant1, name\_t variant2)
+* void name\_get\_str(string\_t str, name\_t variant, bool append)
+* bool name\_parse\_str(name\_t variant, const char str[], const char **endp)
+* void name\_out\_str(FILE *file, name\_t variant)
+* bool name\_in\_str(name\_t variant, FILE *file)
 
-Initialize the variant 'variant' (aka constructor) and set it to the value of 'ref'.
+#### Specialized methods
 
-##### void name\_set(name\_t variant, const name\_t ref)
-
-Set the variant 'variant' to the value of 'ref'.
-
-##### void name\_init\_move(name\_t variant, name\_t ref)
-
-Initialize the variant 'variant' (aka constructor) by stealing as many resources from 'ref' as possible.
-After-wise 'ref' is cleared.
-This method is created only if all Oplist of the variant define INIT\_MOVE method.
-
-##### void name\_move(name\_t variant, name\_t ref)
-##### void name\_move\_elementN(name\_t variant, typeN ref)
-
-Set the variant 'variant' by stealing as many resources from 'ref' as possible.
-After-wise 'ref' is cleared.
-This method is created only if all Oplist of the variant define MOVE method.
-
-##### void name\_clear(name\_t variant)
-
-Clear the variant 'variant (aka destructor).
-
-##### void name\_reset(name\_t variant)
-
-Reset the variant 'variant and make it empty.
+The following specialized methods are automatically created by the previous definition macro:
 
 ##### void name\_init\_elementN(name\_t variant)
 
-Initialize the variant 'variant' to the type of 'element1'
+Initialize the variant 'variant' to the type of 'element1' [constructor]
+using the default constructor of this element.
 This method is defined if all methods define an INIT method.
 
 ##### void name\_init\_set\_elementN(name\_t variant, const typeN elementN)
 
-Initialize and set the variant 'variant' to the type and value of 'elementN'.
+Initialize the variant 'variant' and set it to the type and value of 'elementN' [constructor]
+
+##### void name\_move\_elementN(name\_t variant, typeN ref)
+
+Set the variant 'variant' by stealing as many resources from 'ref' as possible.
+Afterwards 'ref' is cleared (destructor)
+This method is created only if all Oplist of the variant define MOVE method.
 
 ##### void name\_set\_elementN(name\_t variant, const typeN elementN)
 
@@ -2565,59 +2584,9 @@ If the variant isn't an object of such type, it returns NULL.
 Return a pointer to the 'variant' viewed as of type 'typeN'.
 If the variant isn't an object of such type, it returns NULL.
 
-##### bool name\_empty\_p(const name\_t variant)
-
-Return true if the variant is empty, false otherwise.
-
 ##### bool name\_elementN\_p(const name\_t variant)
 
 Return true if the variant is of the type of 'elementN'.
-
-##### size\_t name\_hash(const name\_t variant)
-
-Return a hash associated to the variant.
-All types associated to the variant shall have a hash function
-for this function to be defined.
-
-##### bool name\_equal\_p(const name\_t variant1, const name\_t variant2)
-
-Return true if both objects are equal, false otherwise.
-All types associated to the variant shall have a equal\_p function
-for this function to be defined.
-
-##### void name\_swap(name\_t variant1, name\_t variant2)
-
-Swap both objects.
-
-##### void name\_get\_str(string\_t str, name\_t variant, bool append)
-
-Convert the variant into a formatted string, appending it into 'str' or not.
-All types associated to the variant shall have a GET\_STR method
-for this function to be defined.
-
-##### bool name\_parse\_str(name\_t variant, const char str[], const char **endp)
-
-Parse the formatted string 'str' that is assumed to be a string representation of a variant
-and set 'variant' to this representation.
-This method is only defined if all types of the element defines PARSE\_STR & INIT methods itself.
-It returns true if success, false otherwise.
-If endp is not NULL, it sets '*endp' to the pointer of the first character not
-decoded by the function.
-
-##### void name\_out\_str(FILE *file, name\_t variant)
-
-Convert the variant into a formatted string and send it to the stream 'file'.
-All types associated to the variant shall have a out\_str function
-for this function to be defined.
-
-##### bool name\_in\_str(name\_t variant, FILE *file)
-
-Read a formatted string representation of the variant from the stream 'file'
-and update the object variant with it.
-All types associated to the variant shall have a in\_str function
-for this function to be defined.
-It returns true if success, false otherwise.
-This method is defined if all methods define an INIT method.
 
 
 
@@ -2625,7 +2594,9 @@ This method is defined if all methods define an INIT method.
 
 A binary tree is a tree data structure in which each node has at most two children,
 which are referred to as the left child and the right child.
-In this kind of tree, all elements of the tree are totally ordered.
+A node without any child is called a leaf. It can be seen as an ordered set.
+
+All elements of such tree are also totally ordered.
 The current implementation is [RED-BLACK TREE](https://en.wikipedia.org/wiki/Red%E2%80%93black_tree)
 which provides performance guarante for both insertion and lockup operations.
 It has not to be confused with a [B-TREE](https://en.wikipedia.org/wiki/B-tree).
@@ -2634,22 +2605,27 @@ It has not to be confused with a [B-TREE](https://en.wikipedia.org/wiki/B-tree).
 #### RBTREE\_DEF\_AS(name,  name\_t, name\_it\_t, type[, oplist])
 
 RBTREE\_DEF defines the binary ordered tree 'name##\_t' and its associated methods as "static inline" functions.
-'name' shall be a C identifier that will be used to identify the container.
+'name' shall be a C identifier that will be used to identify the list.
+It will be used to create all the types (including the iterator)
+and functions to handle the container.
+This definition shall be done once per name and per compilation unit.
 
 The CMP operator is used to perform the total ordering of the elements.
 
-It shall be done once per type and per compilation unit.
-It also define the iterator name##\_it\_t and its associated methods as "static inline" functions.
-
-The object oplist is expected to have at least the following operators (INIT, INIT\_SET, SET, CLEAR and CMP),
-otherwise default methods are used. If there is no given oplist, the basic oplist for basic C types is used
-or a globally registered oplist is used.
-The created methods will use the operators to init, set and clear the contained object.
+The oplist shall have at least the following operators (INIT, INIT\_SET, SET, CLEAR & CMP),
+otherwise it won't generate compilable code.
 
 Some methods may return a modifiable pointer to the found element
 (for example, _get). In this case, the user shall not modify the
 key order of the element, as there is no reordering of the tree
 in this case.
+
+A push method on the tree will put the given 'key' in its right place in the tree
+by keeping the tree ordered.
+It overwrites the already existing value if the key is already present in the dictionnary (contrary to C++).
+
+RBTREE\_DEF\_AS is the same as RBTREE\_DEF2 except the name of the types name\_t, name\_it\_t
+are provided by the user.
 
 Example:
 
@@ -2662,19 +2638,15 @@ Example:
                 rbtree_uint_clear(tree);                              
         }
 
-RBTREE\_DEF\_AS is the same as RBTREE\_DEF2 except the name of the types name\_t, name\_it\_t
-are provided.
-
 
 #### RBTREE\_OPLIST(name [, oplist])
 
 Return the oplist of the Red-Black tree defined by calling RBTREE\_DEF with name & oplist.
 If there is no given oplist, the basic oplist for basic C types is used.
 
-#### Created methods
+#### Created types
 
-The following methods are automatically and properly created by the previous macros. 
-In the following methods, name stands for the name given to the macro that is used to identify the type.
+The following types are automatically defined by the previous definition macro with 'name' if not provided by the user:
 
 ##### name\_t
 
@@ -2684,52 +2656,45 @@ Type of the Red Black Tree.
 
 Type of an iterator over this Red Black Tree.
 
-##### void name\_init(name\_t rbtree)
+#### Generic methods
 
-Initialize the Red Black Tree 'rbtree' to be empty.
+The following methods of the generic interface are defined (See generic interface for details):
 
-##### void name\_clear(name\_t rbtree)
+* void name\_init(name\_t rbtree)
+* void name\_clear(name\_t rbtree)
+* void name\_init\_set(name\_t rbtree, const name\_t ref)
+* void name\_set(name\_t rbtree, const name\_t ref)
+* void name\_init\_move(name\_t rbtree, name\_t ref)
+* void name\_move(name\_t rbtree, name\_t ref)
+* void name\_reset(name\_t rbtree)
+* size\_t name\_size(const name\_t rbtree)
+* void name\_push(name\_t rbtree, const type data)
+* void name\_emplace\[suffix\](name\_t rbtree, args...)
+* type * name\_get(const name\_t rbtree, const type data)
+* const type * name\_cget(const name\_t rbtree, const type data)
+* void name\_swap(name\_t rbtree1, name\_t rbtree2)
+* bool name\_empty\_p(const name\_t rbtree)
+* void name\_it(name\_it\_t it, name\_t rbtree)
+* void name\_it\_set(name\_it\_t it, const name\_it\_t ref)
+* void name\_it\_last(name\_it\_t it, name\_t rbtree)
+* void name\_it\_end(name\_it\_t it, name\_t rbtree)
+* bool name\_end\_p(const name\_it\_t it)
+* bool name\_last\_p(const name\_it\_t it)
+* void name\_it\_remove(name\_t rbtree, name\_it\_t it)
+* void name\_next(name\_it\_t it)
+* void name\_previous(name\_it\_t it)
+* type *name\_ref(name\_it\_t it)
+* const type *name\_ref(name\_it\_t it)
+* void name\_get\_str(string\_t str, const name\_t rbtree, bool append)
+* bool name\_parse\_str(name\_t tree, const char str[], const char **endp)
+* void name\_out\_str(FILE *file, const name\_t rbtree)
+* bool name\_in\_str(name\_t rbtree, FILE *file)
+* bool name\_equal\_p(const name\_t rbtree1, const name\_t rbtree2)
+* size\_t name\_hash(const name\_t rbtree)
 
-Clear the Red Black Tree 'rbtree'.
+#### Specialized methods
 
-##### void name\_init\_set(name\_t rbtree, const name\_t ref)
-
-Initialize the Red Black Tree 'rbtree' to be the same as 'ref'.
-
-##### void name\_set(name\_t rbtree, const name\_t ref)
-
-Set the Red Black Tree 'rbtree' to be the same as 'ref'.
-
-##### void name\_init\_move(name\_t rbtree, name\_t ref)
-
-Initialize the Red Black Tree 'rbtree' by stealing as resource as possible
-from 'ref' and clear 'ref'.
-
-##### void name\_move(name\_t rbtree, name\_t ref)
-
-Set the Red Black Tree 'rbtree' by stealing as resource as possible
-from 'ref' and clear 'ref'.
-
-##### void name\_reset(name\_t rbtree)
-
-Reset the Red Black Tree 'rbtree' (It remains initialized but empty).
-
-##### size\_t name\_size(const name\_t rbtree)
-
-Return the number of elements of the Red Black Tree.
-
-##### void name\_push(name\_t rbtree, const type data)
-
-Push 'data' into the Red Black Tree 'rbtree' at its ordered place
-while keeping the tree balanced.
-It overwrites the already existing value if 'key' is already present in the dictionnary (contrary to C++).
-
-##### void name\_emplace[\_suffix](name\_t rbtree, args...)
-
-Push a new element by initializing it with the provided arguments,
-at its ordered place while keeping the tree balanced.
-It overwrites the already existing value if 'key' is already present in the dictionnary (contrary to C++).
-This method is created if the EMPLACE\_TYPE operator is provided. See emplace chapter.
+The following specialized methods are automatically created by the previous definition macro:
 
 ##### void name\_pop(type *dest, name\_t rbtree, const type data)
 
@@ -2750,49 +2715,11 @@ or NULL if there is no element.
 Return a pointer to the maximum element of the tree
 or NULL if there is no element.
 
-##### type * name\_get(const name\_t rbtree, const type *data)
-##### const type * name\_cget(const name\_t rbtree, const type *data)
-
-Return a pointer to the element of the tree 'rbtree' that is equal to 'data',
-or NULL if there is no match.
-
-##### void name\_swap(name\_t rbtree1, name\_t rbtree2)
-
-Swap both trees.
-
-##### bool name\_empty\_p(const name\_t rbtree)
-
-Return true if the tree is empty, false otherwise.
-
-##### void name\_it(name\_it\_t it, name\_t rbtree)
-
-Set the iterator 'it' to the first element of 'rbtree'.
-
-##### void name\_it\_set(name\_it\_t it, const name\_it\_t ref)
-
-Set the iterator 'it' to the same element than 'ref'.
-
-##### void name\_it\_last(name\_it\_t it, name\_t rbtree)
-
-Set the iterator 'it' to the last element of 'rbtree'.
-
-##### void name\_it\_end(name\_it\_t it, name\_t rbtree)
-
-Set the iterator 'it' to no element of 'rbtree'.
-
 ##### void name\_it\_from(name\_it\_t it, const name\_t rbtree, const type data)
 
 Set the iterator 'it' to
 the lowest element of the tree 'rbtree' greater or equal than 'data'
 or an iterator to no element is there is none.
-
-##### bool name\_end\_p(const name\_it\_t it)
-
-Return true if 'it' references no longer a valid element.
-
-##### bool name\_last\_p(const name\_it\_t it)
-
-Return true if 'it' references the last element or is no longer valid.
 
 ##### bool name\_it\_until\_p(const name\_it\_t it, const type data)
 
@@ -2803,61 +2730,6 @@ or if it references no longer a valid element, false otherwise.
 
 Return true if 'it' references an element that is lower or equal than 'data'.
 Otherwise (or if it references no longer a valid element) it returns false.
-
-##### void name\_it\_remove(name\_t rbtree, name\_it\_t it)
-
-Remove the element pointed by 'it' from the tree 'rbtree' and update 'it' to point to the next element.
-All other iterators to the tree became invalid.
-
-##### void name\_next(name\_it\_t it)
-
-Update the iterator 'it' to the next element.
-
-##### void name\_previous(name\_it\_t it)
-
-Update the iterator 'it' to the previous element.
-
-##### type *name\_ref(name\_it\_t it)
-##### const type *name\_ref(name\_it\_t it)
-
-Return a pointer to the element pointer by the iterator 'it'.
-This pointer remains valid until the Red Black Tree is modified by another method.
-
-##### void name\_get\_str(string\_t str, const name\_t rbtree, bool append)
-
-Generate a formatted string representation of the rbtree 'rbtree' and set 'str' to this representation
-(if 'append' is false) or append 'str' with this representation (if 'append' is true).
-This method is only defined if the type of the element defines a GET\_STR method itself.
-
-##### bool name\_parse\_str(name\_t tree, const char str[], const char **endp)
-
-Parse the formatted string 'str' that is assumed to be a string representation of a RBTREE
-and set 'tree' to this representation.
-This method is only defined if all types of the element defines PARSE\_STR & INIT methods itself.
-It returns true if success, false otherwise.
-If endp is not NULL, it sets '*endp' to the pointer of the first character not
-decoded by the function.
-
-##### void name\_out\_str(FILE *file, const name\_t rbtree)
-
-Generate a formatted string representation of the rbtree 'rbtree' and outputs it into the FILE 'file'.
-This method is only defined if the type of the element defines a OUT\_STR method itself.
-
-##### bool name\_in\_str(name\_t rbtree, FILE *file)
-
-Read from the file 'file' a formatted string representation of a rbtree and set 'rbtree' to this representation.
-It returns true if success, false otherwise.
-This method is only defined if the type of the element defines a IN\_STR method itself.
-
-##### bool name\_equal\_p(const name\_t rbtree1, const name\_t rbtree2)
-
-Return true if both rbtree 'rbtree1' and 'rbtree2' are equal.
-This method is only defined if the type of the element defines a EQUAL method itself.
-
-##### size\_t name\_hash(const name\_t rbtree)
-
-Return the hash of the tree.
-This method is only defined if the type of the element defines a HASH method itself.
 
 
 
@@ -2881,6 +2753,7 @@ depends on the type itself (its size, its compare cost) and the cache of the
 processor. 
 
 #### BPTREE\_DEF2(name, N, key\_type, key\_oplist, value\_type, value\_oplist)
+#### BPTREE\_DEF2\_AS(name,  name\_t, name\_it\_t, name\_itref\_t, N, key\_type, key\_oplist, value\_type, value\_oplist)
 
 Define the B+TREE tree of rank N 'name##\_t' and its associated methods as
 "static inline" functions. This B+TREE will be created as an associative
@@ -2893,10 +2766,13 @@ N is the number of items per node and shall be greater or equal than 2.
 It shall be done once per type and per compilation unit.
 It also define the iterator name##\_it\_t and its associated methods as "static inline" functions.
 
-The object oplist is expected to have at least the following operators (INIT, INIT\_SET, SET, CLEAR and CMP),
-otherwise default methods are used. If there is no given oplist, the basic oplist for basic C types is used
-or a globally registered oplist is used.
-The created methods will use the operators to init, set and clear the contained object.
+The object oplist shall have at least the operators (INIT, INIT\_SET, SET, CLEAR and CMP).
+
+BPTREE\_DEF2\_AS is the same as BPTREE\_DEF2 except the name of
+the container type name\_t, 
+the iterator type name\_it\_t,
+and the iterated object type name\_itref\_t
+are provided by the user.
 
 Example:
 
@@ -2909,17 +2785,15 @@ Example:
                 tree_uint_clear(tree);
         }
 
-#### BPTREE\_DEF2\_AS(name,  name\_t, name\_it\_t, name\_itref\_t, N, key\_type, key\_oplist, value\_type, value\_oplist)
-
-Same as BPTREE\_DEF2 except the name of the types name\_t, name\_it\_t,
-name\_itref\_t are provided.
 
 #### BPTREE\_OPLIST2(name, key\_oplist, value\_oplist)
 
 Return the oplist of the BPTREE defined by calling BPTREE\_DEF2 with name,
 key\_oplist and value\_oplist.
 
+
 #### BPTREE\_DEF(name, N, key\_type[, key\_oplist])
+#### BPTREE\_DEF\_AS(name,  name\_t, name\_it\_t, name\_itref\_t, N, key\_type, key\_oplist)
 
 Define the B+TREE tree of rank N 'name##\_t' and its associated methods as
 "static inline" functions. This B+TREE will be created as an ordered set
@@ -2932,13 +2806,11 @@ N is the number of items per node and shall be greater or equal than 2.
 It shall be done once per type and per compilation unit.
 It also define the iterator name##\_it\_t and its associated methods as "static inline" functions.
 
-The object oplist is expected to have at least the following operators (INIT, INIT\_SET, SET, CLEAR and CMP),
-otherwise default methods are used. If there is no given oplist, the basic oplist for basic C types is used
-or a globally registered oplist is used.
-The created methods will use the operators to init, set and clear the contained object.
+The object oplist shall have at least the operators (INIT, INIT\_SET, SET, CLEAR and CMP).
 
-In the following specification, in this case, value\_type will be defined as the same
-as key\_type.
+BPTREE\_DEF\_AS is the same as BPTREE\_DEF except the name of
+the container type name\_t, the iterator type name\_it\_t and the iterated object type name\_itref\_t
+are provided by the user.
 
 Example:
 
@@ -2951,10 +2823,6 @@ Example:
                 tree_uint_clear(tree);
         }
 
-#### BPTREE\_DEF\_AS(name,  name\_t, name\_it\_t, name\_itref\_t, N, key\_type, key\_oplist)
-
-Same as BPTREE\_DEF except the name of the types name\_t, name\_it\_t, name\_itref\_t
-are provided.
 
 #### BPTREE\_OPLIST(name[, key\_oplist])
 
@@ -2963,6 +2831,7 @@ If there is no given oplist, the basic oplist for basic C types is used.
 
 
 #### BPTREE\_MULTI\_DEF2(name, N, key\_type, key\_oplist, value\_type, value\_oplist)
+#### BPTREE\_MULTI\_DEF2\_AS(name,  name\_t, name\_it\_t, name\_itref\_t, N, key\_type, key\_oplist, value\_type, value\_oplist)
 
 Define the B+TREE tree of rank N 'name##\_t' and its associated methods as
 "static inline" functions. This B+TREE will be created as an associative
@@ -2973,13 +2842,12 @@ the value associated to the key).
 
 See BPTREE\_DEF2 for additional details and example.
 
+BPTREE\_MULTI\_DEF2\_AS is the same as BPTREE\_MULTI\_DEF2 except the name of the types
+name\_t, name\_it\_t, name\_itref\_t are provided by the user.
 
-#### BPTREE\_MULTI\_DEF2\_AS(name,  name\_t, name\_it\_t, name\_itref\_t, N, key\_type, key\_oplist, value\_type, value\_oplist)
-
-Same as BPTREE\_MULTI\_DEF2 except the name of the types name\_t, name\_it\_t, name\_itref\_t
-are provided.
 
 #### BPTREE\_MULTI\_DEF(name, N, key\_type[, key\_oplist])
+#### BPTREE\_MULTI\_DEF\_AS(name,  name\_t, name\_it\_t, name\_itref\_t, N, key\_type, key\_oplist)
 
 Define the B+TREE tree of rank N 'name##\_t' and its associated methods as
 "static inline" functions. This B+TREE will be created as an ordered set
@@ -2990,17 +2858,13 @@ the key value).
 
 See BPTREE\_DEF for additional details and example.
 
-
-#### BPTREE\_MULTI\_DEF\_AS(name,  name\_t, name\_it\_t, name\_itref\_t, N, key\_type, key\_oplist)
-
-Same as BPTREE\_MULTI\_DEF except the name of the types name\_t, name\_it\_t, name\_itref\_t
-are provided.
+BPTREE\_MULTI\_DEF\_AS is the same as BPTREE\_MULTI\_DEF except the name of the types
+name\_t, name\_it\_t, name\_itref\_t are provided by the user.
 
 
-#### Created methods
+#### Created types
 
-The following methods are automatically and properly created by the previous macros. 
-In the following methods, name stands for the name given to the macro that is used to identify the type.
+The following types are automatically defined by the previous definition macro if not provided by the user:
 
 ##### name\_t
 
@@ -3014,54 +2878,47 @@ Type of an iterator over this B+Tree.
 
 Type of one item referenced in the B+Tree. It is either:
 
-* a structure composed of a pointer to the key (field key\_ptr) and a pointer to the value (field value\_ptr) if the B+Tree is a map
+* a structure composed of a pointer to the key (field key\_ptr) and a pointer to the value (field value\_ptr) if the B+Tree is an associative array,
 * or the basic type of the container if the B+Tree is a set.
 
-##### void name\_init(name\_t tree)
+#### Generic methods
 
-Initialize the B+Tree 'tree' and set it to empty.
+The following methods of the generic interface are defined (See generic interface for details):
 
-##### void name\_clear(name\_t tree)
+* void name\_init(name\_t tree)
+* void name\_clear(name\_t tree)
+* void name\_init\_set(name\_t tree, const name\_t ref)
+* void name\_set(name\_t tree, const name\_t ref)
+* void name\_init\_move(name\_t tree, name\_t ref)
+* void name\_move(name\_t tree, name\_t ref)
+* void name\_reset(name\_t tree)
+* size\_t name\_size(const name\_t tree)
+* void name\_push(name\_t tree, const key\_type data) [for set definition only]
+* void name\_set\_at(name\_t tree, const key\_type data, const value\_type val) [for associative array definition only]
+* bool name\_erase(name\_t tree, const key\_type data)
+* value\_type * name\_get(const name\_t tree, const key\_type data)
+* const value\_type * name\_cget(const name\_t tree, const key\_type data)
+* value\_type * name\_safe\_get(name\_t tree, const key\_type data)
+* void name\_swap(name\_t tree1, name\_t tree2)
+* bool name\_empty\_p(const name\_t tree)
+* void name\_it(name\_it\_t it, name\_t tree)
+* void name\_it\_set(name\_it\_t it, const name\_it\_t ref)
+* void name\_it\_end(name\_it\_t it, name\_t tree)
+* bool name\_end\_p(const name\_it\_t it)
+* bool name\_it\_equal\_p(const name\_it\_t it1, const name\_it\_t it1)
+* void name\_next(name\_it\_t it)
+* name\_itref\_t *name\_ref(name\_it\_t it)
+* const name\_itref\_t *name\_cref(name\_it\_t it)
+* void name\_get\_str(string\_t str, const name\_t tree, bool append)
+* bool name\_parse\_str(name\_t tree, const char str[], const char **endp)
+* void name\_out\_str(FILE *file, const name\_t tree)
+* bool name\_in\_str(name\_t tree, FILE *file)
+* bool name\_equal\_p(const name\_t tree1, const name\_t tree2)
+* size\_t name\_hash(const name\_t tree)
 
-Clear the B+Tree 'tree'.
+#### Specialized methods
 
-##### void name\_init\_set(name\_t tree, const name\_t ref)
-
-Initialize the B+Tree 'tree' to be the same as 'ref'.
-
-##### void name\_set(name\_t tree, const name\_t ref)
-
-Set the B+Tree 'tree' to be the same as 'ref'.
-
-##### void name\_init\_move(name\_t tree, name\_t ref)
-
-Initialize the B+Tree 'tree' by stealing as resource as possible
-from 'ref' and clear 'ref'.
-
-##### void name\_move(name\_t tree, name\_t ref)
-
-Set the B+Tree 'tree' by stealing as resource as possible
-from 'ref' and clear 'ref'.
-
-##### void name\_reset(name\_t tree)
-
-Reset the B+Tree 'tree' (It remains initialized but empty).
-
-##### size\_t name\_size(const name\_t tree)
-
-Return the number of elements of the B+Tree.
-
-##### void name\_push(name\_t tree, const key\_type data)
-
-Push 'data' into the B+Tree 'tree' at the right order
-while keeping the tree balanced.
-This function is defined only if the tree is not defined as an associative array.
-
-##### void name\_set\_at(name\_t tree, const key\_type data, const value\_type val)
-
-Associate the value 'val' to the key 'data' in the B+Tree 'tree'
-while keeping the tree balanced.
-This function is defined only if the tree is defined as an associative array.
+The following specialized methods are automatically created by the previous definition macro:
 
 ##### void name\_pop(value\_type *dest, name\_t tree, const key\_type data)
 
@@ -3069,12 +2926,6 @@ Pop 'data' from the B+Tree 'tree'
 and save the popped value into 'dest' if the pointer is not null
 while keeping the tree balanced.
 Do nothing if 'data' is no present in the B+Tree.
-
-##### bool name\_erase(name\_t tree, const key\_type data)
-
-Remove 'data' from the B+Tree 'tree'
-while keeping the tree balanced.
-Return true if the data is removed, false if nothing is done (data is not present).
 
 ##### value\_type * name\_min(const name\_t tree)
 ##### const value\_type * name\_cmin(const name\_t tree)
@@ -3088,47 +2939,10 @@ or NULL if there is no element in the B+Tree.
 Return a pointer to the maximum element of the tree
 or NULL if there is no element in the B+Tree.
 
-##### value\_type * name\_get(const name\_t tree, const key\_type data)
-##### const value\_type * name\_cget(const name\_t tree, const key\_type data)
-
-Return a pointer to the value of the tree 'tree' that is associated to 'data',
-or NULL if there is no match.
-
-##### value\_type * name\_safe\_get(name\_t tree, const key\_type data)
-
-Return a pointer to the value of the tree 'tree' that is associated to 'data'.
-If the key doesn't exist yet in the tree, a new entry is created with 'key'
-and a value initialized with its INIT operator,
-then a pointer to the newly created entry is returned.
-
-##### void name\_swap(name\_t tree1, name\_t tree2)
-
-Swap both trees.
-
-##### bool name\_empty\_p(const name\_t tree)
-
-Return true if the tree is empty, false otherwise.
-
-##### void name\_it(name\_it\_t it, name\_t tree)
-
-Set the iterator 'it' to the first element of 'tree'.
-
-##### void name\_it\_set(name\_it\_t it, const name\_it\_t ref)
-
-Set the iterator 'it' to the same element than 'ref'.
-
-##### void name\_it\_end(name\_it\_t it, name\_t tree)
-
-Set the iterator 'it' to no element of 'tree'.
-
 ##### void name\_it\_from(name\_it\_t it, const name\_t tree, const type data)
 
 Set the iterator 'it' to the greatest element of 'tree'
 lower of equal than 'data' or the first element is there is none.
-
-##### bool name\_end\_p(const name\_it\_t it)
-
-Return true if 'it' references no longer a valid element.
 
 ##### bool name\_it\_until\_p(const name\_it\_t it, const type data)
 
@@ -3138,61 +2952,26 @@ Return true if 'it' references an element that is greater or equal than 'data'.
 
 Return true if 'it' references an element that is lower or equal than 'data'.
 
-##### bool name\_it\_equal\_p(const name\_it\_t it1, const name\_it\_t it1)
 
-Return true if both iterators reference the same object.
 
-##### void name\_next(name\_it\_t it)
+### M-TREE
 
-Update the iterator 'it' to the next element.
+A [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) is an abstract data type 
+to represent the hierarchic nature of a structure with a set of connected nodes.
+Each node in the tree can be connected to many children,
+but must be connected to exactly one parent,
+except for the root node, which has no parent.
 
-##### name\_itref\_t *name\_ref(name\_it\_t it)
-##### const name\_itref\_t *name\_cref(name\_it\_t it)
-
-Return a pointer to the element pointer by the iterator 'it'.
-This pointer remains valid until the B+Tree is modified by another method.
-
-##### void name\_get\_str(string\_t str, const name\_t tree, bool append)
-
-Generate a formatted string representation of the tree 'tree' and set 'str' to this representation
-(if 'append' is false) or append 'str' with this representation (if 'append' is true).
-This method is only defined if the type of the element defines a GET\_STR method itself.
-
-##### bool name\_parse\_str(name\_t tree, const char str[], const char **endp)
-
-Parse the formatted string 'str' that is assumed to be a string representation of a tree
-and set 'tree' to this representation.
-This method is only defined if the type of the element defines a PARSE\_STR method itself.
-It returns true if success, false otherwise.
-If endp is not NULL, it sets '*endp' to the pointer of the first character not
-decoded by the function.
-
-##### void name\_out\_str(FILE *file, const name\_t tree)
-
-Generate a formatted string representation of the tree 'tree' and outputs it into the FILE 'file'.
-This method is only defined if the type of the element defines a OUT\_STR method itself.
-
-##### bool name\_in\_str(name\_t tree, FILE *file)
-
-Read from the file 'file' a formatted string representation of a tree and set 'tree' to this representation.
-It returns true if success, false otherwise.
-This method is only defined if the type of the element defines a IN\_STR method itself.
-
-##### bool name\_equal\_p(const name\_t tree1, const name\_t tree2)
-
-Return true if both trees 'tree1' and 'tree2' are equal.
-This method is only defined if the type of the element defines a EQUAL method itself.
-
-##### size\_t name\_hash(const name\_t tree)
-
-Return the hash of the tree.
-This method is only defined if the type of the element defines a HASH method itself.
+TODO: document API
 
 
 
 ### M-PRIOQUEUE
 
-A [priority queue](https://en.wikipedia.org/wiki/Priority_queue) is a queue  where each element has a "priority" associated with it: an element with high priority is served before an element with low priority. It is currently implemented as a [heap](https://en.wikipedia.org/wiki/Heap_(data_structure)).
+A [priority queue](https://en.wikipedia.org/wiki/Priority_queue) is a queue 
+where each element has a "priority" associated with it:
+an element with high priority is served before an element with low priority. 
+It is currently implemented as a [heap](https://en.wikipedia.org/wiki/Heap_(data_structure)).
 
 
 #### PRIOQUEUE\_DEF(name, type [, oplist])
@@ -3202,17 +2981,29 @@ Define the priority queue 'name##\_t' and its associated methods
 as "static inline" functions.
 The queue will be composed of object of type 'type'.
 
-'name' shall be a C identifier that will be used to identify the container.
+'name' shall be a C identifier that will be used to identify the list.
+It will be used to create all the types (including the iterator)
+and functions to handle the container.
+This definition shall be done once per name and per compilation unit.
 
-The CMP operator is used to sort the queue so that it always returns the minimum of the queue.
+The CMP operator is used to sort the queue so that the highest priority is the minimun.
 The EQUAL operator is used to identify an item on update or remove operations.
-It is uncorrelated with the CMP operator from the point of view of this operator.
+It is uncorrelated with the CMP operator from the point of view of this container.
 (i.e. EQUAL() == TRUE is not equivalent to CMP() == 0 for this container)
 
-The object oplist is expected to have at least the following operators (INIT, INIT\_SET, SET, CLEAR, CMP and EQUAL),
-otherwise default methods are used. If there is no given oplist, the basic oplist for basic C types is used
-or a globally registered oplist is used.
-The created methods will use the operators to init, set and clear the contained object.
+This queue will push the object at the right place in the queue in function
+of their priority. A pop from this queue will always return the minimum of all objects
+within the queue (contrary to C++ which returns the maximum), and the front method
+will reference this object.
+
+The oplist shall have at least the following operators (INIT, INIT\_SET, SET, CLEAR, CMP),
+otherwise it won't generate compilable code.
+
+The equal\_p, update & erase methods have a complexity of O(n) due to the linear
+search of the data and are only created if the EQUAL method is defined.
+
+Iteration over this container won't iterate from minimum to maximum but in an implementation
+define way that ensures that all items are accessed.
 
 PRIOQUEUE\_DEF\_AS is the same as PRIOQUEUE\_DEF except the name of the types name\_t, name\_it\_t are provided.
 
@@ -3221,11 +3012,9 @@ PRIOQUEUE\_DEF\_AS is the same as PRIOQUEUE\_DEF except the name of the types na
 Define the oplist of the prioqueue defined with 'name' and potentially 'oplist'.
 If there is no given oplist, the basic oplist for basic C types is used.
 
-#### Created methods
+#### Created types
 
-The following methods are automatically and properly created by the previous
-macros. In the following methods, name stands for the name given to the macro
-that is used to identify the type.
+The following types are automatically defined by the previous definition macro if not provided by the user:
 
 ##### name\_t
 
@@ -3235,66 +3024,44 @@ Type of the priority queue of 'type'.
 
 Type of an iterator over this priority queue.
 
-##### void name\_init(name\_t queue)
+#### Generic methods
 
-Initialize the priority queue 'queue' and set it to empty.
+The following methods of the generic interface are defined (See generic interface for details):
 
-##### void name\_clear(name\_t queue)
+* void name\_init(name\_t queue)
+* void name\_clear(name\_t queue)
+* void name\_init\_set(name\_t queue, const name\_t ref)
+* void name\_set(name\_t queue, const name\_t ref)
+* void name\_init\_move(name\_t queue, name\_t ref)
+* void name\_move(name\_t queue, name\_t ref)
+* void name\_reset(name\_t queue)
+* size\_t name\_size(const name\_t queue)
+* bool name\_empty\_p(const name\_t queue)
+* void name\_swap(name\_t queue1, name\_t queue2)
+* void name\_push(name\_t queue, const type x)
+* const type *name\_front(name\_t queue)
+* void name\_pop(type *dest, name\_t queue)
+* bool name\_equal\_p(const name\_t queue1, const name\_t queue2)
+* bool name\_erase(name\_t queue, const type\_t val)
+* void name\_it(name\_it\_t it, name\_t queue)
+* void name\_it\_last(name\_it\_t it, name\_t queue)
+* void name\_it\_set(name\_it\_t it, const name\_it\_t ref)
+* void name\_it\_end(name\_it\_t it, name\_t queue)
+* bool name\_end\_p(const name\_it\_t it)
+* bool name\_last\_p(const name\_it\_t it)
+* bool name\_it\_equal\_p(const name\_it\_t it1, const name\_it\_t it2)
+* void name\_next(name\_it\_t it)
+* void name\_previous(name\_it\_t it)
+* const type *name\_cref(name\_it\_t it)
+* void name\_get\_str(string\_t str, const name\_t queue, bool append)
+* bool name\_parse\_str(name\_t queue, const char str[], const char **endp)
+* void name\_out\_str(FILE *file, const name\_t queue)
+* bool name\_in\_str(name\_t queue, FILE *file)
+* void name\_emplace\[suffix\](name\_t queue, args...)
 
-Clear the priority queue 'tree'.
+#### Specialized methods
 
-##### void name\_init\_set(name\_t queue, const name\_t ref)
-
-Initialize the Priority Queue 'queue' to be the same as 'ref'.
-
-##### void name\_set(name\_t queue, const name\_t ref)
-
-Set the Priority Queue 'queue' to be the same as 'ref'.
-
-##### void name\_init\_move(name\_t queue, name\_t ref)
-
-Initialize the Priority Queue 'queue' by stealing as resource as possible
-from 'ref' and clear 'ref'.
-
-##### void name\_move(name\_t queue, name\_t ref)
-
-Set the Priority Queue 'queue' by stealing as resource as possible
-from 'ref' and clear 'ref'.
-
-##### void name\_reset(name\_t queue)
-
-Reset the Priority Queue 'queue' (It remains initialized but empty).
-
-##### size\_t name\_size(const name\_t queue)
-
-Return the number of elements of the Priority Queue.
-
-##### bool name\_empty\_p(const name\_t queue)
-
-Return true if the queue is empty, false otherwise.
-
-##### void name\_swap(name\_t queue1, name\_t queue2)
-
-Swap both queues.
-
-##### void name\_push(name\_t queue, const type x)
-
-Push 'x' into the Priority Queue 'queue' (somewhere in the queue).
-
-##### const type *name\_front(name\_t queue)
-
-Return a constant pointer to the item having the
-minimum value of all elements in the queue
-'queue'.
-
-##### void name\_pop(type *dest, name\_t queue)
-
-Pop the minimum value from the priority Queue 'queue'
-and save the popped value into 'dest' if the pointer is not null.
-
-##### bool name\_equal\_p(const name\_t queue1, const name\_t queue2)
-
-Return true if both queues are equal, false otherwise.
+The following specialized methods are automatically created by the previous definition macro:
 
 ##### void name\_update(name\_t queue, const type\_t old\_val, const type\_t new\_val)
 
@@ -3303,86 +3070,6 @@ to 'new\_val' (increase or decrease priority).
 This method has a complexity of O(n) (due to to linear search of the data).
 This method is defined only if the EQUAL method is defined.
 
-##### void name\_erase(name\_t queue, const type\_t val)
-
-Remove the data of the priority equals to 'val' (in EQUAL sense).
-This method has a complexity of O(n) (due to to linear search of the data).
-This method is defined only if the EQUAL method is defined.
-
-##### void name\_it(name\_it\_t it, name\_t queue)
-
-Set the iterator 'it' to the first element of 'queue'.
-It won't iterate from minimum to maximum but in an implementation
-define way that ensures that all items are accessed.
-
-##### void name\_it\_last(name\_it\_t it, name\_t queue)
-
-Set the iterator 'it' to the last element of 'queue'.
-
-##### void name\_it\_set(name\_it\_t it, const name\_it\_t ref)
-
-Set the iterator 'it' to the same element than 'ref'.
-
-##### void name\_it\_end(name\_it\_t it, name\_t queue)
-
-Set the iterator 'it' to no element of 'queue'.
-
-##### bool name\_end\_p(const name\_it\_t it)
-
-Return true if 'it' references no longer a valid element.
-
-##### bool name\_last\_p(const name\_it\_t it)
-
-Return true if 'it' references the last element, or there is no
-longer any valid element.
-
-##### bool name\_it\_equal\_p(const name\_it\_t it1, const name\_it\_t it2)
-
-Return true if both iterators reference the same entries.
-
-##### void name\_next(name\_it\_t it)
-
-Update the iterator 'it' to the next element.
-
-##### void name\_previous(name\_it\_t it)
-
-Update the iterator 'it' to the previous element.
-
-##### const type *name\_cref(name\_it\_t it)
-
-Return a constant pointer to the referenced item.
-
-##### void name\_get\_str(string\_t str, const name\_t queue, bool append)
-
-Generate a formatted string representation of the priority queue 'queue' and set 'str' to this representation
-(if 'append' is false) or append 'str' with this representation (if 'append' is true).
-This method is only defined if the type of the element defines a GET\_STR method itself.
-
-##### bool name\_parse\_str(name\_t queue, const char str[], const char **endp)
-
-Parse the formatted string 'str' that is assumed to be a string representation of a priority queue
-and set 'queue' to this representation.
-This method is only defined if the type of the element defines PARSE\_STR & INIT methods itself.
-It returns true if success, false otherwise.
-If endp is not NULL, it sets '*endp' to the pointer of the first character not
-decoded by the function.
-
-##### void name\_out\_str(FILE *file, const name\_t queue)
-
-Generate a formatted string representation of the priority queue 'queue' and outputs it into the FILE 'file'.
-This method is only defined if the type of the element defines a OUT\_STR method itself.
-
-##### bool name\_in\_str(name\_t queue, FILE *file)
-
-Read from the file 'file' a formatted string representation of a priority queue and set 'queue' to this representation.
-It returns true if success, false otherwise.
-This method is only defined if the type of the element defines a IN\_STR & INIT method itself.
-
-##### void name\_emplace[\_suffix](name\_t queue, args...)
-
-Push a new element on the priority queue by initializing it with the provided arguments.
-This method is created if the EMPLACE\_TYPE operator is provided. See emplace chapter.
-
 
 
 ### M-BUFFER
@@ -3390,10 +3077,11 @@ This method is created if the EMPLACE\_TYPE operator is provided. See emplace ch
 This header implements different kind of fixed circular buffer.
 
 A [circular buffer](https://en.wikipedia.org/wiki/Circular_buffer) 
-(or ring buffer) is a data structure using a single, bounded buffer
+(or ring buffer or circular queue) is a data structure using a single, bounded buffer
 as if its head was connected to its tail.
 
 #### BUFFER\_DEF(name, type, size, policy[, oplist])
+#### BUFFER\_DEF\_AS(name,  name\_t, type, size, policy[, oplist])
 
 Define the buffer 'name##\_t' and its associated methods as "static inline" functions.
 A buffer is a fixed circular queue implementing a queue (or stack) interface.
@@ -3401,7 +3089,10 @@ It can be used to transfer message from multiple producer threads to multiple co
 This is done internally using a mutex and conditional waits
 (if it is built with the BUFFER\_THREAD\_SAFE option -- default)
 
-'name' shall be a C identifier that will be used to identify the container.
+'name' shall be a C identifier that will be used to identify the list.
+It will be used to create all the types (including the iterator)
+and functions to handle the container.
+This definition shall be done once per name and per compilation unit.
 
 The size parameter defined the fixed size of the queue.
 It can be 0. In this case, the fixed size is defined at initialization time only
@@ -3423,16 +3114,17 @@ Multiple additional policy can be applied to the buffer by performing a logical 
 * BUFFER\_PUSH\_OVERWRITE : PUSH overwrites the last entry if the queue is full instead of blocking,
 * BUFFER\_DEFERRED\_POP : do not consider the object to be fully popped from the buffer by calling the pop method until the call to pop\_deferred ; this enables to handle object that are in-progress of being consumed by the thread.
 
-This container is designed to be used for easy synchronization inter-threads 
-(and the variable should be a global shared one).
+This container is designed to be used for synchronization inter-threads of data
+(and the buffer variable should be a global shared one). A function taggued "thread safe"
+is thread safe only if the container has been generated with the THREAD_SAFE option.
 
-It shall be done once per type and per compilation unit.
+The oplist shall have at least the following operators (INIT\_SET, SET and CLEAR),
+otherwise it won't generate compilable code.
 
-The object oplist is expected to have at least the following operators (INIT, INIT\_SET, SET and CLEAR),
-otherwise default methods are used. If there is no given oplist, the basic oplist for basic C types is used
-or a globally registered oplist is used.
-The created methods will use the operators to init, set and clear the contained object.
-It supports also INIT\_MOVE if available.
+The push & pop methods operate like push\_blocking & pop\_blocking when the blocking parameter
+is true.
+
+BUFFER\_DEF\_AS is the same as BUFFER\_DEF except the name of the type name\_t is provided.
 
 Example:
 
@@ -3448,15 +3140,29 @@ Example:
         }
 
 
-#### BUFFER\_DEF\_AS(name,  name\_t, type, size, policy[, oplist])
+#### Created types
 
-Same as BUFFER\_DEF except the name of the type name\_t
-is provided.
+The following types are automatically defined by the previous definition macro if not provided by the user:
 
+##### name\_t
 
-#### Created methods
+Type of the buffer.
 
-The following methods are automatically and properly created by the previous macros. In the following methods, name stands for the name given to the macro that is used to identify the type.
+#### Generic methods
+
+The following methods of the generic interface are defined (See generic interface for details):
+
+* void name\_clear(buffer\_t buffer) [Not thread safe]
+* void name\_reset(buffer\_t buffer) [Thread safe]
+* bool name\_empty\_p(const buffer\_t buffer) [Thread safe]
+* size\_t name\_size(const buffer\_t buffer) [Thread safe]
+* size\_t name\_capacity(const buffer\_t buffer) [Thread safe]
+* bool name\_push(buffer\_t buffer, const type data)
+* bool name\_pop(type *data, buffer\_t buffer)
+
+#### Specialized methods
+
+The following specialized methods are automatically created by the previous definition macro:
 
 ##### void name\_init(buffer\_t buffer, size\_t size)
 
@@ -3466,35 +3172,10 @@ or the one used to create the buffer was '0'.
 The size of the buffer shall be lower or equal than UINT\_MAX.
 This function is not thread safe.
 
-##### void name\_clear(buffer\_t buffer)
-
-Clear the buffer and destroy all its allocation.
-This function is not thread safe and doesn't perform any synchronization:
-all threads shall have stopped using the buffer.
-
-##### void name\_reset(buffer\_t buffer)
-
-Reset the buffer, making it empty but initialized.
-This function is thread safe if the buffer was built thread safe.
-
-##### bool name\_empty\_p(const buffer\_t buffer)
-
-Return true if the buffer is empty, false otherwise.
-This function is thread safe if the buffer was built thread safe. 
-
 ##### bool name\_full\_p(const buffer\_t buffer)
 
 Return true if the buffer is full, false otherwise.
 This function is thread safe if the buffer was built thread safe. 
-
-##### size\_t name\_size(const buffer\_t buffer)
-
-Return the number of elements in the buffer that can be en-queued.
-This function is thread safe if the buffer was built thread safe. 
-
-##### size\_t name\_capacity(const buffer\_t buffer)
-
-Return the capacity of the buffer.
 
 ##### size\_t name\_overwrite(const buffer\_t buffer)
 
@@ -3507,7 +3188,7 @@ it returns 0.
 ##### bool name\_push\_blocking(buffer\_t buffer, const type data, bool blocking)
 
 Push the object 'data' in the buffer 'buffer',
-waiting for an empty room if 'blocking' is true.
+waiting for an empty room if 'blocking' is true (performing a blocking wait)
 Returns true if the data was pushed, false otherwise.
 Always return true if the buffer is blocking.
 This function is thread safe if the buffer was built thread safe. 
@@ -3532,14 +3213,6 @@ Returns true if a data was popped, false otherwise.
 Always return true if the buffer is blocking.
 This function is thread safe if the buffer was built thread safe. 
 
-##### bool name\_push(buffer\_t buffer, const type data)
-
-Same as name\_push\_blocking with blocking equals to true.
-
-##### bool name\_pop(type *data, buffer\_t buffer)
-
-Same as name\_pop\_blocking with blocking equals to true.
-
 ##### bool name\_pop\_release(buffer\_t buffer)
 
 If the buffer is built with the BUFFER\_DEFERRED\_POP option,
@@ -3549,6 +3222,7 @@ Otherwise it does nothing.
 
 
 #### QUEUE\_MPMC\_DEF(name, type, policy[, oplist])
+#### QUEUE\_MPMC\_DEF\_AS(name, name\_t, type, policy[, oplist])
 
 Define the MPMC queue 'name##\_t' and its associated methods as "static inline" functions.
 A MPMC queue is a fixed circular queue implementing a queue (or stack) interface.
@@ -3558,7 +3232,10 @@ a lot of the properties of such algorithms.
 
 The size is specified only at run-time and shall be a power of 2.
 
-'name' shall be a C identifier that will be used to identify the container.
+'name' shall be a C identifier that will be used to identify the list.
+It will be used to create all the types (including the iterator)
+and functions to handle the container.
+This definition shall be done once per name and per compilation unit.
 
 An additional policy can be applied to the buffer by performing a logical or of the following properties:
 
@@ -3567,28 +3244,40 @@ An additional policy can be applied to the buffer by performing a logical or of 
 
 This container is designed to be used for easy synchronization inter-threads
 in a context of very fast communication (the variable should be a global shared one).
-There should not have more threads using this queue than they are available hardware cores 
+There should not have much more threads using this queue than they are available hardware cores 
 due to the only partial protection on Context-switch Immunity of this structure
 (This can happen only if you abuse **massively** the number of threads vs the number of cores).
 
-It shall be done once per type and per compilation unit.
+The oplist shall have at least the following operators (INIT\_SET, SET and CLEAR),
+otherwise it won't generate compilable code.
 
-The object oplist is expected to have at least the following operators (INIT, INIT\_SET, SET and CLEAR),
-otherwise default methods are used. If there is no given oplist, the basic oplist for basic C types is used
-or a globally registered oplist is used.
-The created methods will use the operators to init, set and clear the contained object.
-It supports also INIT\_MOVE if available.
+The size method is thread safe but may return a size greater than
+the size of the queue in some race condition.
 
-#### QUEUE\_MPMC\_DEF\_AS(name, name\_t, type, policy[, oplist])
-
-Same as QUEUE\_MPMC\_DEF except the name of the type name\_t
+QUEUE\_MPMC\_DEF\_AS is the same as QUEUE\_MPMC\_DEF except the name of the type name\_t
 is provided.
 
 
-#### Created methods
+#### Created types
 
-The following methods are automatically and properly created by the previous macros.
-In the following methods, name stands for the name given to the macro that is used to identify the type (prefix).
+The following types are automatically defined by the previous definition macro if not provided by the user:
+
+##### name\_t
+
+Type of the circular queue.
+
+#### Generic methods
+
+The following methods of the generic interface are defined (See generic interface for details):
+
+* void name\_clear(buffer\_t buffer)
+* bool name\_empty\_p(const buffer\_t buffer) [Thread safe]
+* size\_t name\_size(const buffer\_t buffer) [Thread safe]
+* size\_t name\_capacity(const buffer\_t buffer) [Thread safe]
+
+#### Specialized methods
+
+The following specialized methods are automatically created by the previous definition macro:
 
 ##### void name\_init(buffer\_t buffer, size\_t size)
 
@@ -3596,31 +3285,10 @@ Initialize the buffer 'buffer' with 'size' elements.
 The 'size' argument shall be a power of two greater than 0, and less than UINT\_MAX.
 This function is not thread safe.
 
-##### void name\_clear(buffer\_t buffer)
-
-Clear the buffer and destroy all its allocation.
-This function is not thread safe and doesn't perform any synchronization:
-all threads shall have stopped using the buffer.
-
-##### bool name\_empty\_p(const buffer\_t buffer)
-
-Return true if the buffer is empty, false otherwise.
-This function is thread safe.
-
 ##### bool name\_full\_p(const buffer\_t buffer)
 
 Return true if the buffer is full, false otherwise.
 This function is thread safe.
-
-##### size\_t name\_size(const buffer\_t buffer)
-
-Return the number of elements in the buffer that can be en-queued.
-This function is thread safe but may return a size greater than
-the size of the queue in some race condition.
-
-##### size\_t name\_capacity(const buffer\_t buffer)
-
-Return the capacity of the buffer.
 
 ##### bool name\_push(buffer\_t buffer, const type data)
 
@@ -3646,6 +3314,7 @@ This function is thread safe.
 
 
 #### QUEUE\_SPSC\_DEF(name, type, policy[, oplist])
+#### QUEUE\_SPSC\_DEF\_AS(name, name\_t, type, policy[, oplist])
 
 Define the SPSC queue 'name##\_t' and its associated methods as "static inline" functions.
 A SPSC queue is a fixed circular queue implementing a queue (or stack) interface.
@@ -3655,7 +3324,10 @@ It is more specialized than QUEUE\_MPMC\_DEF and as such, is faster.
 
 The size is specified only at run-time and shall be a power of 2.
 
-'name' shall be a C identifier that will be used to identify the container.
+'name' shall be a C identifier that will be used to identify the list.
+It will be used to create all the types (including the iterator)
+and functions to handle the container.
+This definition shall be done once per name and per compilation unit.
 
 An additional policy can be applied to the buffer by performing a logical or of the following properties:
 
@@ -3665,23 +3337,32 @@ An additional policy can be applied to the buffer by performing a logical or of 
 This container is designed to be used for easy synchronization inter-threads
 in a context of very fast communication (the variable should be a global shared one).
 
-It shall be done once per type and per compilation unit.
+The oplist shall have at least the following operators (INIT, INIT\_SET, SET and CLEAR),
+otherwise it won't generate compilable code.
 
-The object oplist is expected to have at least the following operators (INIT, INIT\_SET, SET and CLEAR),
-otherwise default methods are used. If there is no given oplist, the basic oplist for basic C types is used
-or a globally registered oplist is used.
-The created methods will use the operators to init, set and clear the contained object.
-It supports also INIT\_MOVE if available.
-
-#### QUEUE\_SPSC\_DEF\_AS(name, name\_t, type, policy[, oplist])
-
-Same as QUEUE\_MPMC\_DEF except the name of the type name\_t
+QUEUE\_SPSC\_DEF\_AS is the same as QUEUE\_MPMC\_DEF except the name of the type name\_t
 is provided.
 
-#### Created methods
+#### Created types
 
-The following methods are automatically and properly created by the previous macros.
-In the following methods, name stands for the name given to the macro that is used to identify the type (prefix).
+The following types are automatically defined by the previous definition macro if not provided by the user:
+
+##### name\_t
+
+Type of the circular queue.
+
+#### Generic methods
+
+The following methods of the generic interface are defined (See generic interface for details):
+
+##### void name\_clear(buffer\_t buffer)
+##### bool name\_empty\_p(const buffer\_t buffer) [Thread safe]
+##### size\_t name\_size(const buffer\_t buffer) [Thread safe]
+##### size\_t name\_capacity(const buffer\_t buffer) [Thread safe]
+
+#### Specialized methods
+
+The following specialized methods are automatically created by the previous definition macro:
 
 ##### void name\_init(buffer\_t buffer, size\_t size)
 
@@ -3689,31 +3370,10 @@ Initialize the buffer 'buffer' with 'size' elements.
 The 'size' argument shall be a power of two greater than 0, and less than UINT\_MAX.
 This function is not thread safe.
 
-##### void name\_clear(buffer\_t buffer)
-
-Clear the buffer and destroy all its allocation.
-This function is not thread safe and doesn't perform any synchronization:
-all threads shall have stopped using the buffer.
-
-##### bool name\_empty\_p(const buffer\_t buffer)
-
-Return true if the buffer is empty, false otherwise.
-This function is thread safe.
-
 ##### bool name\_full\_p(const buffer\_t buffer)
 
 Return true if the buffer is full, false otherwise.
 This function is thread safe.
-
-##### size\_t name\_size(const buffer\_t buffer)
-
-Return the number of elements in the buffer that can be en-queued.
-This function is thread safe but may return a size greater than
-the size of the queue in some race condition.
-
-##### size\_t name\_capacity(const buffer\_t buffer)
-
-Return the capacity of the buffer.
 
 ##### bool name\_push(buffer\_t buffer, const type data)
 
@@ -3738,7 +3398,7 @@ This function is thread safe.
 
 Push as much objects from the array 'data' in the buffer 'buffer' as possible,
 starting from the object at index 0 to the object at index 'n-1'.
-Returns the number of objects pushed.
+Returns the number of objects effectively pushed (it depends on the free size of the queue)
 This function is thread safe. 
 
 ##### bool name\_pop(type *data, buffer\_t buffer)
@@ -3813,13 +3473,13 @@ Only a single reader thread and a single writer thread are supported.
 It is a SPSC atomic shared register.
 In practice, it is implemented using a triple buffer (lock-free).
 
-It shall be done once per type and per compilation unit. Not all functions are thread safe.
+'name' shall be a C identifier that will be used to identify the list.
+It will be used to create all the types (including the iterator)
+and functions to handle the container.
+This definition shall be done once per name and per compilation unit.
 
-The oplist is expected to have at least the following operators (INIT, INIT\_SET, SET and CLEAR),
-otherwise default methods are used. If there is no given oplist, the basic oplist for basic C types is used
-or a globally registered oplist is used.
-The created methods will use the operators to init, set and clear the contained object.
-It supports also INIT\_MOVE if available.
+The oplist shall have at least the following operators (INIT\_SET, SET and CLEAR),
+otherwise it won't generate compilable code.
 
 Example:
 
@@ -3839,47 +3499,29 @@ Example:
 SNAPSHOT\_SPSC\_DEF\_AS is the same as SNAPSHOT\_SPSC\_DEF except the name of the type name\_t is provided.
 
 
-#### Created methods
+#### Created types
 
-The following methods are automatically and properly created by the previous macros.
-In the following methods, name stands for the name given to the macro that is used to identify the type.
-snapshot\_t refers to either 'name ## \_t' or 'name\_t'
+The following types are automatically defined by the previous definition macro if not provided by the user:
 
-##### void name\_init(snapshot\_t snapshot)
+##### name\_t
 
-Initialize the snapshot 'snapshot'.
-This function is not thread safe.
+Type of the circular queue.
 
-##### void name\_clear(snapshot\_t snapshot)
+#### Generic methods
 
-Clear the snapshot and destroy all its allocations.
-This function is not thread safe.
+The following methods of the generic interface are defined (See generic interface for details)
+but none is thread safe:
 
-##### void name\_init\_set(snapshot\_t snapshot, const snapshot\_t org)
+* void name\_init(snapshot\_t snapshot)
+* void name\_clear(snapshot\_t snapshot)
+* void name\_init\_set(snapshot\_t snapshot, const snapshot\_t org)
+* void name\_set(snapshot\_t snapshot, const snapshot\_t org)
+* void name\_init\_move(snapshot\_t snapshot, snapshot\_t org)
+* void name\_move(snapshot\_t snapshot, snapshot\_t org)
 
-Initialize the snapshot 'snapshot' from the state of 'org'.
-This function is not thread safe.
+#### Specialized methods
 
-##### void name\_set(snapshot\_t snapshot, const snapshot\_t org)
-
-Set the snapshot 'snapshot' from the state of 'org'.
-This function is not thread safe.
-
-##### void name\_init\_move(snapshot\_t snapshot, snapshot\_t org)
-
-Move the contain of the snapshot 'org' to the uninitialized 'snapshot',
-clearing 'org' in the process.
-This function is not thread safe.
-This function is defined only if the underlying type has defined the
-INIT\_MOVE operator.
-
-##### void name\_move(snapshot\_t snapshot, snapshot\_t org)
-
-Move the contain of the snapshot 'org' to the initialized 'snapshot',
-clearing 'org' in the process.
-This function is not thread safe.
-This function is defined only if the underlying type has defined the
-MOVE operator.
+The following specialized methods are automatically created by the previous definition macro:
 
 ##### type *name\_write(snapshot\_t snap)
 
@@ -3928,31 +3570,39 @@ but ensuring integrity and coherency of the data accross multiple threads.
 One single writer and multiple (=N) readers are supported.
 In practice, it is implemented using a 'N+2' buffer (lock-free).
 
-It shall be done once per type and per compilation unit. Not all functions are thread safe.
+'name' shall be a C identifier that will be used to identify the list.
+It will be used to create all the types (including the iterator)
+and functions to handle the container.
+This definition shall be done once per name and per compilation unit.
 
-The oplist is expected to have at least the following operators (INIT, INIT\_SET, SET and CLEAR),
-otherwise default methods are used. If there is no given oplist, the basic oplist for basic C types is used
-or a globally registered oplist is used.
-The created methods will use the operators to init, set and clear the contained object.
+The oplist shall have at least the following operators (INIT, INIT\_SET, SET and CLEAR),
+otherwise it won't generate compilable code.
 
 SNAPSHOT\_SPMC\_DEF\_AS is the same as SNAPSHOT\_SPMC\_DEF except the name of the type name\_t is provided.
 
 
-#### Created methods
+#### Created types
 
-The following methods are automatically and properly created by the previous macros.
-In the following methods, name stands for the name given to the macro that is used to identify the type.
-snapshot\_t refers to either 'name ## \_t' or the provided 'name\_t'
+The following types are automatically defined by the previous definition macro if not provided by the user:
+
+##### name\_t
+
+Type of the circular queue.
+
+#### Generic methods
+
+The following methods of the generic interface are defined (See generic interface for details):
+
+* void name\_clear(snapshot\_t snapshot)
+
+#### Specialized methods
+
+The following specialized methods are automatically created by the previous definition macro:
 
 ##### void name\_init(snapshot\_t snapshot, size\_t numReaders)
 
 Initialize the communication snapshot 'snapshot' with 'numReaders' reader threads.
 'numReaders' shall be less than 2046.
-This function is not thread safe.
-
-##### void name\_clear(snapshot\_t snapshot)
-
-Clear the snapshot and destroy all its allocations.
 This function is not thread safe.
 
 ##### type *name\_write(snapshot\_t snap)
@@ -4003,32 +3653,38 @@ Multiple (=M) writers and multiple (=N) readers are supported.
 In practice, it is implemented using a 'M+N+2' buffer (lock-free)
 by avoiding copying the data.
 
-It shall be done once per type and per compilation unit. Not all functions are thread safe.
+'name' shall be a C identifier that will be used to identify the list.
+It will be used to create all the types (including the iterator)
+and functions to handle the container.
+This definition shall be done once per name and per compilation unit.
 
-The oplist is expected to have at least the following operators (INIT, INIT\_SET, SET and CLEAR),
-otherwise default methods are used. If there is no given oplist, the basic oplist for basic C types is used
-or a globally registered oplist is used.
-The created methods will use the operators to init, set and clear the contained object.
+The oplist shall have at least the following operators (INIT, INIT\_SET, SET and CLEAR),
+otherwise it won't generate compilable code.
 
 SNAPSHOT\_MPMC\_DEF\_AS is the same as SNAPSHOT\_MPMC\_DEF except the name of the type name\_t is provided.
 
 
-#### Created methods
+#### Created types
 
-The following methods are automatically and properly created by the previous macros.
-In the following methods, name stands for the name given to the macro that is used to identify the type.
-snapshot\_t refers to either 'name ## \_t' or the provided 'name\_t'
+The following types are automatically defined by the previous definition macro if not provided by the user:
+
+##### name\_t
+
+Type of the circular queue.
+
+#### Generic methods
+
+The following methods of the generic interface are defined (See generic interface for details):
+
+* void name\_clear(snapshot\_t snapshot)
+
+#### Specialized methods
 
 ##### void name\_init(snapshot\_t snapshot, size\_t numReaders, size\_t numWriters)
 
 Initialize the communication snapshot 'snapshot' with 'numReaders' reader threads
 and 'numWriters' writer threads.
 The sum of 'numReaders' and 'numWriters' shall be less than 2046.
-This function is not thread safe.
-
-##### void name\_clear(snapshot\_t snapshot)
-
-Clear the snapshot and destroy all its allocations.
 This function is not thread safe.
 
 ##### type *name\_write\_start(snapshot\_t snap)
@@ -4075,23 +3731,27 @@ Several shared pointers may own the same object, sharing ownership of an object.
 
 
 #### SHARED\_PTR\_DEF(name, type[, oplist])
+#### SHARED\_PTR\_DEF\_AS(name, name\_t, type[, oplist])
 
 Define the shared pointer 'name##\_t' and its associated methods as "static inline" functions.
-A shared pointer is a mechanism to keep tracks of all users of an object
-and performs an automatic destruction of the object whenever all users release
+A shared pointer is a mechanism to keep tracks of all registered users of an object
+and performs an automatic destruction of the object only when all users release
 their need on this object.
+
+'name' shall be a C identifier that will be used to identify the list.
+It will be used to create all the types (including the iterator)
+and functions to handle the container.
+This definition shall be done once per name and per compilation unit.
 
 The tracking of ownership is atomic and the destruction of the object is thread safe.
 
-The object oplist is expected to have at least the following operators (CLEAR to clear the object and DEL to free the allocated memory),
-otherwise default methods are used. If there is no given oplist, the basic oplist for basic C types is used
-or a globally registered oplist is used.
-The created methods will use the operators to initialize, set and clear the contained object.
-It supports also the INIT\_MOVE operator of the object if available.
-
+The object oplist is expected to have at least the following operators (CLEAR to clear the object and DEL to free the allocated memory).
 
 There are designed to work with buffers with policy BUFFER\_PUSH\_INIT\_POP\_MOVE
 to send a shared pointer across multiple threads.
+
+SHARED\_PTR\_DEF\_AS is the same as SHARED\_PTR\_DEF except the name of the type name\_t
+is provided.
 
 Example:
 
@@ -4107,23 +3767,35 @@ Example:
         }
 
 
-#### SHARED\_PTR\_DEF\_AS(name, name\_t, type[, oplist])
+#### SHARED\_PTR\_RELAXES\_DEF(name, type[, oplist])
+#### SHARED\_PTR\_RELAXES\_DEF\_AS(name, name\_t, type[, oplist])
 
-Same as SHARED\_PTR\_DEF except the name of the type name\_t
-is provided.
+Theses are the same as SHARED\_PTR\_DEF / SHARED\_PTR\_DEF\_AS
+except that they are not thread safe.
+See SHARED\_PTR\_DEF for other details.
 
-#### Created methods
 
-The following methods are automatically and properly created by the previous macros. In the following methods, name stands for the name given to the macro that is used to identify the type.
+#### Created types
+
+The following types are automatically defined by the previous definition macro if not provided by the user:
+
+##### name\_t
+
+Type of the shared pointer.
+
+#### Specialized methods
+
+The following specialized methods are automatically created by the previous definition macro:
 
 ##### void name\_init(shared\_t shared)
 
-Initialize the shared pointer 'shared' to represent NULL
+Initialize the shared pointer 'shared' to represent the NULL pointer
 (no object is therefore referenced).
 
 ##### void name\_init2(shared\_t shared, type *data)
 
-Initialize the shared pointer 'shared' to reference '*data'.
+Initialize the shared pointer 'shared' to reference the object '*data'
+and takes ownership of this object.
 User code shall not use '*data' (or any pointer to it) anymore
 as the shared pointer gets the exclusive ownership of the object.
 
@@ -4131,6 +3803,7 @@ as the shared pointer gets the exclusive ownership of the object.
 
 Initialize the shared pointer 'shared' to a new object of type 'type'.
 The default constructor of type is used to initialize the object.
+This method is only created only if the INIT method is provided.
 
 ##### void name\_init\_set(shared\_t shared, const shared\_t src)
 
@@ -4140,18 +3813,18 @@ This function is thread safe from 'src' point of view.
 
 ##### bool name\_NULL\_p(const shared\_t shared)
 
-Return true if shared doesn't reference any object.
+Return true if shared doesn't reference any object (i.e. is the NULL pointer).
 
 ##### void name\_clear(shared\_t shared)
 
-Clear the shared pointer:
+Clear the shared pointer (destructor):
 the shared pointer loses its ownership of the object and
-it destroys it if no longer any other shared pointers own the object.
+it destroys the shared object if no longer any other shared pointers own it.
 This function is thread safe.
 
 ##### void name\_reset(shared\_t shared)
 
-'shared' loses ownership of its object and destroys it
+'shared' loses ownership of its shared object and destroys it
 if no longer any other shared pointers own it.
 Then it makes the shared pointer 'shared' references no object (NULL)
 (it doesn't reference its object any-longer and loses its ownership of it).
@@ -4232,6 +3905,7 @@ Usage:
         struct mystruct variable = { ISHARED_PTR_STATIC_DESIGNATED_INIT(ishared_double, struct mystruct) };
 
 #### ISHARED\_PTR\_DEF(name, type[, oplist])
+#### ISHARED\_PTR\_DEF\_AS(name, name\_t, type[, oplist])
 
 Define the associated methods to handle the shared pointer named 'name'
 as "static inline" functions.
@@ -4262,11 +3936,14 @@ freed by DEL.
 
 It can be used for statically allocated entities. However, in this case,
 you shall disable the operator NEW & DEL when expanding the oplist
-so that the CLEAR method doesn't try to free the objects like this:
+so that the destruction doesn't try to free the objects, like this:
 
     (NEW(0), DEL(0))
 
 NEW & DEL operators shall be either both defined, or both disabled.
+
+ISHARED\_PTR\_DEF\_AS is the same as ISHARED\_PTR\_DEF except the name of the type name\_t
+is provided.
 
 Example (dynamic):
 
@@ -4289,26 +3966,25 @@ Example (dynamic):
         }
 
 
-#### ISHARED\_PTR\_DEF\_AS(name, name\_t, type[, oplist])
+#### Created types
 
-Same as ISHARED\_PTR\_DEF except the name of the type name\_t
-is provided.
+The following types are automatically defined by the previous definition macro if not provided by the user:
 
-
-#### Created methods
-
-The following methods are automatically and properly created by the previous macros. In the following methods, name stands for the name given to the macro that is used to identify the type.
-
-##### typedef type *name\_t
+##### name\_t
 
 It will define name\_t as a pointer to shared counted object.
 This is a synonymous to a pointer to the object.
+
+#### Specialized methods
+
+The following specialized methods are automatically created by the previous definition macro:
 
 ##### name\_t name\_init(type *object)
 
 Return a shared pointer to 'object' which owns 'object'.
 It initializes the private fields of 'object' handling the shared pointer,
-returning a pointer to the object (but initialized).
+returning the same pointer to the object from a value point of view,
+but with the shared pointer field initialized.
 
 As a consequence, the shared pointer part of 'object' shall not have been initialized yet.
 The other part of 'object' may or may not be initialized before calling this method.
@@ -4322,11 +3998,9 @@ This function is thread safe.
 ##### name\_t name\_init\_new(void)
 
 Allocate a new object, initialize it and return an initialized shared pointer to it.
-
 The used allocation function is the NEW operator.
 
-This function is created only if the INIT method is defined in the oplist
-and if the NEW method has not been disabled in the oplist.
+This method is only created only if the INIT & NEW methods are provided and not disabled.
 
 ##### name\_t name\_init\_once(type *object)
 
@@ -4338,8 +4012,7 @@ Once the object is fully cleared, the initialization function may occur once aga
 object shall be a global variable initialized with the
 ISHARED\_PTR\_STATIC\_INIT macro.
 
-This function is created only if the INIT method is defined in the oplist
-and if the NEW method has been disabled in the oplist.
+This method is only created only if the INIT & NEW methods are provided and not disabled.
 
 ##### void name\_clear(name\_t shared)
 
@@ -4381,29 +4054,36 @@ level of the structure.
 See example of ILIST\_DEF.
 
 #### ILIST\_DEF(name, type[, oplist])
+#### ILIST\_DEF\_AS(name, name\_t, name\_it\_t, type[, oplist])
 
 Define the intrusive doubly-linked list 
 and define the associated methods to handle it as "static inline" functions.
-'name' shall be a C identifier that will be used to identify the list. It will be used to create all the types and functions to handle the container.
-It shall be done once per type and per compilation unit.
+
+'name' shall be a C identifier that will be used to identify the list.
+It will be used to create all the types (including the iterator)
+and functions to handle the container.
+This definition shall be done once per name and per compilation unit.
+
+The oplist shall have at least the following operators (CLEAR),
+otherwise it won't generate compilable code.
 
 An object is expected to be part of only one list of a kind in the entire program at a time.
 An intrusive list enables to move from an object to the next object without needing to go through the entire list,
 or to remove an object from a list in O(1).
 It may, or may not, be better than standard list. It depends on the context.
 
-If there is no given oplist, the methods for a basic C types are used,
-or if there is a globally registered oplist, it is used.
-The created methods will use the operators to init, set and clear the contained object.
-
 The given interface won't allocate anything to handle the objects as
 all allocations and initialization are let to the user.
-
 However the objects within the list can be automatically be cleared
 (by calling the CLEAR method to destruct the object) on list destruction.
-The memory allocation, performed by the called, can also be reclaimed
+Then the memory allocation, performed by the user program, can also be reclaimed
 by defining a DEL operator to free the used memory in the object oplist.
 If there is no DEL operator, it is up to the user to free the used memory.
+
+The list iterates from back to front.
+
+ILIST\_DEF\_AS is the same as ILIST\_DEF except the name of the types name\_t, name\_it\_t
+are provided.
 
 Example:
 
@@ -4436,14 +4116,10 @@ Example:
         }
 
 
-#### ILIST\_DEF\_AS(name, name\_t, name\_it\_t, type[, oplist])
 
-Same as SNAPSHOT\_SPSC\_DEF except the name of the types name\_t, name\_it\_t
-are provided.
+#### Created types
 
-#### Created methods
-
-The following methods are automatically and properly created by the previous macros. In the following methods, name stands for the name given to the macro that is used to identify the type.
+The following types are automatically defined by the previous definition macro if not provided by the user:
 
 #### name\_t
 
@@ -4453,69 +4129,71 @@ Type of the list of 'type'.
 
 Type of an iterator over this list.
 
-The following methods are automatically and properly created by the previous macro.
+#### Generic methods
 
-##### void name\_init(name\_t list)
+The following methods of the generic interface are defined (See generic interface for details):
 
-Initialize the list 'list' (aka constructor) to an empty list.
+* void name\_init(name\_t list)
+* void name\_clear(name\_t list)
+* void name\_reset(name\_t list)
+* type *name\_back(const name\_t list)
+* type *name\_front(const name\_t list)
+* bool name\_empty\_p(const name\_t list)
+* void name\_swap(name\_t list1, name\_t list2)
+* void name\_it(name\_it\_t it, name\_t list)
+* void name\_it\_set(name\_it\_t it, const name\_it\_t ref)
+* void name\_it\_last(name\_it\_t it, name\_t list)
+* void name\_it\_end(name\_it\_t it, name\_t list)
+* bool name\_end\_p(const name\_it\_t it)
+* bool name\_last\_p(const name\_it\_t it)
+* bool name\_it\_equal\_p(const name\_it\_t it1, const name\_it\_t it2)
+* void name\_next(name\_it\_t it)
+* void name\_previous(name\_it\_t it)
+* type *name\_ref(name\_it\_t it)
+* const type *name\_cref(const name\_it\_t it)
+* size\_t name\_size(const name\_t list)
+* void name\_remove(name\_t list, name\_it\_t it)
+
+#### Specialized methods
+
+The following specialized methods are automatically created by the previous definition macro:
 
 ##### void name\_init\_field(type *obj)
 
-Initialize the additional fields of the object '*obj'.
-
-##### void name\_clear(name\_t list)
-
-Clear the list 'list (aka destructor). The list can't be used anymore, except with a constructor.
-If the DEL operator is available in the oplist of the type,
-the cleared object will also be deleted.
-
-##### void name\_reset(name\_t list)
-
-Reset the list (the list becomes empty). The list remains initialized but is empty.
-If the DEL operator is available in the oplist of the type,
-the cleared object will also be deleted.
-
-##### type *name\_back(const name\_t list)
-
-Return a pointer to the data stored in the back of the list.
-
-##### type *name\_front(const name\_t list)
-
-Return a pointer to the data stored in the front of the list.
+Initialize the additional fields of the object '*obj' handling the list.
+This function shall be used in the object constructor.
 
 ##### void name\_push\_back(name\_t list, type *obj)
 
-Push the object '*obj' itself at the back of the list 'list'.
+Push the object '*obj' itself (and not a copy) at the back of the list 'list'.
 
 ##### void name\_push\_front(name\_t list, type *obj)
 
-Push the object '*obj' itself at the front of the list 'list'.
+Push the object '*obj' itself (and not a copy) at the front of the list 'list'.
 
 ##### void name\_push\_after(type *position, type *obj)
 
-Push the object '*obj' after the object '*position'.
+Push the object '*obj' itself (and not a copy) after the object '*position'.
 
 ##### type *name\_pop\_back(name\_t list)
 
 Pop the object from the back of the list 'list'
-and return a pointer to the popped object.
+and return a pointer to the popped object,
+given back the ownership of the object to the caller program
+(which becomes responsible to calling the destructor of this object).
 
 ##### type *name\_pop\_front(name\_t list)
 
 Pop the object from the front of the list 'list'
-and return a pointer to the popped object.
-
-##### bool name\_empty\_p(const name\_t list)
-
-Return true if the list is empty, false otherwise.
-
-##### void name\_swap(name\_t list1, name\_t list2)
-
-Swap the list 'list1' and 'list2'.
+and return a pointer to the popped object,
+given back the ownership of the object to the caller program
+(which becomes responsible to calling the destructor of this object).
 
 ##### void name\_unlink(type *obj)
 
 Remove the object '*obj' from the list.
+It gives back the ownership of the object to the caller program
+which becomes responsible to calling the destructor of this object.
 
 ##### type *name\_next\_obj(const name\_t list, const type *obj)
 
@@ -4527,105 +4205,58 @@ or NULL if there is no more object.
 Return the object that is before the object '*obj' in the list
 or NULL if there is no more object.
 
-##### void name\_it(name\_it\_t it, name\_t list)
-
-Set the iterator 'it' to the back(=first) element of 'list'.
-There is no destructor associated to this initialization.
-
-##### void name\_it\_set(name\_it\_t it, const name\_it\_t ref)
-
-Set the iterator 'it' to the iterator 'ref'.
-There is no destructor associated to this initialization.
-
-##### void name\_it\_last(name\_it\_t it, name\_t list)
-
-Set the iterator 'it' to the last element of the list.
-There is no destructor associated to this initialization.
-
-##### void name\_it\_end(name\_it\_t it, name\_t list)
-
-Set the iterator 'it' to the end of the list (i.e. not a valid element).
-There is no destructor associated to this initialization.
-
-##### bool name\_end\_p(const name\_it\_t it)
-
-Return true if the iterator doesn't reference a valid element anymore.
-
-##### bool name\_last\_p(const name\_it\_t it)
-
-Return true if the iterator references the last element or if the iterator doesn't reference a valid element anymore.
-
-##### bool name\_it\_equal\_p(const name\_it\_t it1, const name\_it\_t it2)
-
-Return true if the iterator it1 references the same element than it2.
-
-##### void name\_next(name\_it\_t it)
-
-Move the iterator 'it' to the next element of the list.
-
-##### void name\_previous(name\_it\_t it)
-
-Move the iterator 'it' to the previous element of the list.
-
-##### type *name\_ref(name\_it\_t it)
-
-Return a pointer to the element pointed by the iterator.
-This pointer remains valid until the list is modified by another method.
-
-##### const type *name\_cref(const name\_it\_t it)
-
-Return a constant pointer to the element pointed by the iterator.
-This pointer remains valid until the list is modified by another method.
-
-##### size\_t name\_size(const name\_t list)
-
-Return the number elements of the list (aka size). Return 0 if there no element.
-
 ##### void name\_insert(name\_t list, name\_it\_t it, type x)
 
-Insert a copy of 'x' after the position pointed by 'it' 
-(which is an iterator of the list 'list') or if 'it' doesn't point anymore to a valid element of the list, it is added as the back (=first) element of the 'list'
-This service is available only if a NEW operator is available for the type.
-
-##### void name\_remove(name\_t list, name\_it\_t it)
-
-Remove the element 'it' from the list 'list'.
-After wise, 'it' points to the next element of the list.
+This method is the same as the generic one,
+except it is only created only if the NEW & INIT_SET methods are provided.
 
 ##### void name\_splice\_back(name\_t list1, name\_t list2, name\_it\_t it)
 
-Move the element pointed by 'it' (which is an iterator of 'list2') from the list 'list2' to the back position of 'list1'.
-After wise, 'it' points to the next element of 'list2'.
+Move the element pointed by 'it' from the list 'list2' to the back position of 'list1'.
+'it' shall be an iterator of 'list2'.
+Afterwards, 'it' points to the next element of 'list2'.
 
 ##### void name\_splice(name\_t list1, name\_t list2)
 
 Move all the element of 'list2' into 'list1", moving the last element
 of 'list2' after the first element of 'list1'.
-After-wise, 'list2' is emptied.
+Afterwards, 'list2' is emptied.
 
 
 ### M-CONCURRENT
 
 This header is for transforming a standard container (LIST, ARRAY, DICT, DEQUE, ...)
 into an equivalent container but compatible with concurrent access by different threads. 
-In practice, it puts a lock to access the container.
+In practice, it puts a mutex lock to access the container.
 
 As such it is quite generic. However it is less efficient than containers
 specially tuned for multiple threads.
 There is also no iterators.
 
-#### methods
-
 #### CONCURRENT\_DEF(name, type[, oplist])
+#### CONCURRENT\_DEF\_AS(name, name\_t, type[, oplist])
 
 Define the concurrent container 'name' based on container 'type' of oplist 'oplist',
 and define the associated methods to handle it as "static inline" functions.
-'name' shall be a C identifier that will be used to identify the list. 
-It will be used to create all the types and functions to handle the container.
-It shall be done once per type and per compilation unit.
+
+'name' shall be a C identifier that will be used to identify the list.
+It will be used to create all the types (including the iterator)
+and functions to handle the container.
+This definition shall be done once per name and per compilation unit.
 
 It scans the 'oplist' of the type to create equivalent function,
-so it needs it (either explicitly or implicitly).
+so the exact generated methods depend on explicitly the exported methods in the oplist:
+The init method is only defined if the base container exports the INIT operator,
+same for the clear method and the CLEAR operator,
+and so on for all created methods.
+
+In the description below,
+subtype\_t is the type of the element within the given container 'type' (if it exists),
+key\_t is the key type of the element within the given container 'type' (if it exists),
+value\_t is the value type of the element within the given container 'type' (if it exists).
+
+CONCURRENT\_DEF\_AS is the same as CONCURRENT\_DEF except the name of the type name\_t
+is provided.
 
 Example:
 
@@ -4645,99 +4276,61 @@ Example:
              cdeque_uint_push (x2, 17);
         }
 
-#### CONCURRENT\_DEF\_AS(name, name\_t, type[, oplist])
 
-Same as CONCURRENT\_DEF except the name of the type name\_t
-is provided.
+#### Created types
 
-
-#### Created methods
-
-The following methods are automatically and properly created by the previous macros. 
-In the following methods, name stands for the name given to the macro that is used to identify the type.
+The following types are automatically defined by the previous definition macro if not provided by the user:
 
 ##### name\_t
 
 Type of the concurrent container of 'type'.
 
-##### void name\_init(name\_t concurrent)
+#### Generic methods
 
-Initialize the concurrent container.
-This method is only defined if the base container exports the INIT operator.
+The following methods of the generic interface are defined (See generic interface for details):
 
-##### void name\_init\_set(name\_t concurrent, const name\_t src)
+* void name\_init(name\_t concurrent)
+* void name\_init\_set(name\_t concurrent, const name\_t src)
+* void name\_init\_move(name\_t concurrent, name\_t src)
+* void name\_set(name\_t concurrent, const name\_t src)
+* void name\_move(name\_t concurrent, name\_t src)
+* void name\_reset(name\_t concurrent)
+* void name\_clear(name\_t concurrent)
+* void name\_swap(name\_t concurrent1, name\_t concurrent2)
+* bool name\_empty\_p(const name\_t concurrent)
+* void name\_set\_at(name\_t concurrent, key\_t key, value\_t value)
+* bool name\_erase(name\_t concurrent, const key\_t key)
+* void name\_push(name\_t concurrent, const subtype\_t data)
+* void name\_push\_move(name\_t concurrent, subtype\_t *data)
+* void name\_pop\_move(subtype\_t *data, name\_t concurrent)
+* void name\_get\_str(string\_t str, name\_t concurrent, bool append)
+* void name\_out\_str(FILE *file, name\_t concurrent)
+* bool name\_parse\_str(name\_t concurrent, const char str[], const char **end)
+* bool name\_in\_str(name\_t concurrent, FILE *file)
+* bool name\_equal\_p(name\_t concurrent1, name\_t concurrent2)
+* size\_t name\_hash(name\_t concurrent)
 
-Initialize the concurrent container and set it with a copy of 'src'.
-This method is only defined if the base container exports the INIT\_SET operator.
 
-##### void name\_init\_move(name\_t concurrent, name\_t src)
+Returns true in case of success, false otherwise.
 
-Initialize the concurrent container by stealing as much resources from 'src' as possible.
-Afterwards 'src' is cleared.
-This method is only defined if the base container exports the INIT\_MOVE operator.
 
-##### void name\_set(name\_t concurrent, const name\_t src)
+#### Specialized methods
 
-Set the container with a copy of 'src'.
-This method is only defined if the base container exports the SET operator.
-
-##### void name\_move(name\_t concurrent, name\_t src)
-
-Set the container with the value of 'src' by stealing as much resources from 'src' as possible.
-Afterwards 'src' is cleared.
-This method is only defined if the base container exports the MOVE operator.
-
-##### void name\_reset(name\_t concurrent)
-
-Reset the concurrent container.
-Afterwards the container is empty, but remains initialized.
-This method is only defined if the base container exports the RESET operator.
-
-##### void name\_clear(name\_t concurrent)
-
-Clear the concurrent container and destroy any resource.
-This method shall only be called in context when no other threads can use the resource.
-This method is only defined if the base container exports the CLEAR operator.
-
-##### void name\_swap(name\_t concurrent1, name\_t concurrent2)
-
-Swap both containers.
-This method is only defined if the base container exports the SWAP operator.
-
-##### bool name\_empty\_p(const name\_t concurrent)
-
-Return true if the container is empty, false otherwise.
-This method is only defined if the base container exports the EMPTY\_P operator.
-
-##### void name\_set\_at(name\_t concurrent, key\_t key, value\_t value)
-
-Associate to the key 'key' the value 'value' in the container.
-This method is only defined if the base container exports the SET\_KEY operator.
+The following specialized methods are automatically created by the previous definition macro:
 
 ##### bool name\_get\_copy(value\_t *value, name\_t concurrent, key\_t key)
 
 Read the value associated to the key 'key'. 
 If it exists, it sets '*value' to it and returns true.
-Otherwise it returns false.
+Otherwise it returns false (*value is unchanged).
 This method is only defined if the base container exports the GET\_KEY operator.
 
 ##### void name\_safe\_get\_copy(value\_t *value, name\_t concurrent, key\_t key)
 
 Read the value associated to the key 'key'. 
 If it exists, it sets '*value' to it.
-Otherwise it creates a new value and sets '*value' to it.
+Otherwise it creates a new value (default constructor) and sets '*value' to it.
 This method is only defined if the base container exports the SAFE\_GET\_KEY operator.
-
-##### bool name\_erase(name\_t concurrent, const key\_t key)
-
-Erase the association for the key 'key'.
-Returns true in case of success, false otherwise.
-This method is only defined if the base container exports the ERASE\_KEY operator.
-
-##### void name\_push(name\_t concurrent, const subtype\_t data)
-
-Push data in the container.
-This method is only defined if the base container exports the PUSH operator.
 
 ##### void name\_pop(subtype\_t *data, name\_t concurrent)
 
@@ -4747,45 +4340,6 @@ Testing with the operator EMPTY\_P before calling this function is not enough
 as there can be some concurrent scenario where another thread pop the last value.
 name\_pop\_blocking should be used instead.
 This method is only defined if the base container exports the POP operator.
-
-##### void name\_push\_move(name\_t concurrent, subtype\_t *data)
-
-Push data in the container by stealing as much resources from data as possible.
-Afterwards, data is cleared.
-This method is only defined if the base container exports the PUSH\_MOVE operator.
-
-##### void name\_pop\_move(subtype\_t *data, name\_t concurrent)
-
-Pop data from the container and initialize '*data' with it.
-name\_pop\_move\_blocking should be used instead (See name\_pop for details).
-This method is only defined if the base container exports the POP\_MOVE operator.
-
-##### void name\_get\_str(string\_t str, name\_t concurrent, bool append)
-
-Convert the formatted container into a string representation of it and put it in 'str'
-This method is only defined if the base container exports the GET\_STR operator.
-
-##### void name\_out\_str(FILE *file, name\_t concurrent)
-
-Convert the formatted container into a string and put it in 'file'.
-This method is only defined if the base container exports the OUT\_STR operator.
-
-##### bool name\_parse\_str(name\_t concurrent, const char str[], const char **end)
-
-Convert the formatted string representing the container and set it 'concurrent' to it.
-Return true in case of success, false otherwise.
-This method is only defined if the base container exports the PARSE\_STR operator.
-
-##### bool name\_in\_str(name\_t concurrent, FILE *file)
-
-Read the file and convert the formatted string representing the container and set it 'concurrent' to it.
-Return true in case of success, false otherwise.
-This method is only defined if the base container exports the IN\_STR operator.
-
-##### bool name\_equal\_p(name\_t concurrent1, name\_t concurrent2)
-
-Return true if both containers are equal, false otherwise.
-This method is only defined if the base container exports the EQUAL operator.
 
 ##### bool name\_get\_blocking(value\_t *value, name\_t concurrent, key\_t key, bool blocking)
 
@@ -4814,11 +4368,6 @@ After the wait, it initializes & sets '*data' to it and returns true.
 Otherwise if blocking is false, it returns false (*data remains uninitialized!).
 This method is only defined if the base container exports the POP\_MOVE and EMPTY\_P operators.
 
-##### size\_t name\_hash(name\_t concurrent)
-
-Return a value suitable for being a hash of the container.
-This method is only defined if the base container exports the HASH operator.
-
 
 
 ### M-BITSET
@@ -4840,9 +4389,9 @@ Example:
         }
 
 
-#### methods
+#### methods, types & constants
 
-The methods are mostly the same than for an array. The following methods are available:
+The following methods are available:
 
 ##### bitset\_t
 
@@ -5080,7 +4629,7 @@ Example:
                 string_clear(s1);
         }
 
-#### methods
+#### methods, types & constants
 
 The following methods are available:
 
@@ -5474,7 +5023,7 @@ is undefined.
 
 ##### string\_unicode\_t
 
-Define a type suitable to store a unicode character.
+Define a type suitable to store a unicode character as an integer.
 
 ##### string\_it\_t
 
@@ -5518,12 +5067,11 @@ Return the number of UTF8 encoded characters in the string.
 
 Return true if the string is a valid UTF8,
 false otherwise.
-It doesn't check for unique canonical form for UTF8 string,
-so it may report 'true' whereas the string is not strictly conforming.
+It doesn't check for unique canonical form for UTF8 string.
 
 ##### STRING\_CTE(string)
 
-Macro to convert a constant array string into a temporary string\_t variable
+Macro to convert a constant C string into a temporary string\_t variable
 suitable only for being called within a function.
 
 ##### STRING\_OPLIST
@@ -5532,20 +5080,20 @@ The oplist of a string\_t
 
 ##### BOUNDED\_STRING\_DEF(name, size)
 
-aka char[N+1]
+aka char[size+1]
 TODO: Document the API.
 
 
 ### M-CORE
 
 This header is the internal core of M\*LIB, providing a lot of functionality 
-by extending a lot the preprocessing capability.
+by extending the preprocessing capability.
 Working with these macros is not easy and the developer needs to know
 how the macro preprocessing works.
 It also adds the needed macro for handling the oplist.
 As a consequence, it is needed by all other header files.
 
-Some macros are using recursion to work.
+A few macros are using recursion to work.
 This is not an easy feat to do as it needs some tricks to work (see
 reference).
 This still work well with only one major limitation: it can not be chained.
@@ -5621,7 +5169,7 @@ at macro processing stage, not at compiler stage).
 ##### M\_INV(cond)
 
 Inverse 0 into 1 and 1 into 0. It is undefined if cond is not 0 or 1
-(use M\_BOOL to convert). 
+(You could use M\_BOOL to convert). 
 Return a pre-processing token corresponding to this value (meaning it is evaluated
 at macro processing stage, not at compiler stage).
 
@@ -5629,7 +5177,7 @@ at macro processing stage, not at compiler stage).
 
 Perform a logical 'and' between cond1 and cond2. 
 cond1 and cond2 shall be 0 or 1.
-(You should use M\_bool to convert this parameter otherwise).
+(You could use M\_bool to convert).
 Return a pre-processing token corresponding to this value (meaning it is evaluated
 at macro processing stage, not at compiler stage).
 
@@ -5637,7 +5185,7 @@ at macro processing stage, not at compiler stage).
 
 Perform a logical 'or' between cond1 and cond2. 
 cond1 and cond2 shall be 0 or 1.
-(You should use M\_bool to convert this parameter otherwise).
+(You could use M\_bool to convert).
 Return a pre-processing token corresponding to this value (meaning it is evaluated
 at macro processing stage, not at compiler stage).
 
@@ -5654,22 +5202,22 @@ x and y shall be within [0..M\_MAX\_NB\_ARGUMENT].
 ##### M\_LESS\_THAN\_P(x, y)
 
 Return 1 if x < y, 0 otherwise (resolution is performed at preprocessing time).
-x and y shall be within [0..M\_MAX\_NB\_ARGUMENT].x
+x and y shall be within [0..M\_MAX\_NB\_ARGUMENT].
 
 ##### M\_LESS_OR\_EQUAL\_P(x, y)
 
 Return 1 if x <= y, 0 otherwise (resolution is performed at preprocessing time).
-x and y shall be within [0..M\_MAX\_NB\_ARGUMENT].x
+x and y shall be within [0..M\_MAX\_NB\_ARGUMENT].
 
 ##### M\_GREATER_OR\_EQUAL\_P(x, y)
 
 Return 1 if x >= y, 0 otherwise (resolution is performed at preprocessing time).
-x and y shall be within [0..M\_MAX\_NB\_ARGUMENT].x
+x and y shall be within [0..M\_MAX\_NB\_ARGUMENT].
 
 ##### M\_GREATER_THAN\_P(x, y)
 
 Return 1 if x > y, 0 otherwise (resolution is performed at preprocessing time).
-x and y shall be within [0..M\_MAX\_NB\_ARGUMENT].x
+x and y shall be within [0..M\_MAX\_NB\_ARGUMENT].
 
 ##### M\_COMMA\_P(arglist)
 
@@ -5691,7 +5239,7 @@ It also won't work for expression starting with ')'
 
 ##### M\_PARENTHESIS\_P(expression)
 
-Return 1 if the argument 'expression' starts a parenthesis and ends it
+Return 1 if the argument 'expression' starts with a parenthesis and ends with it
 (like '(...)'), 0 otherwise.
 Return a pre-processing token corresponding to this value (meaning it is evaluated
 at macro processing stage, not at compiler stage).
@@ -5730,8 +5278,8 @@ Return the pre-processing token 'action\_if\_true' if 'cond' is true,
 action\_if\_false otherwise (meaning it is evaluated
 at macro processing stage, not at compiler stage).
 
-cond shall be a 0 or 1 as a preprocessing constant.
-(You should use M\_bool to convert this parameter otherwise).
+'cond' shall be a 0 or 1 as a preprocessing constant.
+(You could use M\_bool to convert).
 
 ##### M\_IF\_EMPTY(cond)(action\_if\_true, action\_if\_false)
 
@@ -5739,14 +5287,14 @@ Return the pre-processing token 'action\_if\_true' if 'cond' is empty,
 action\_if\_false otherwise (meaning it is evaluated
 at macro processing stage, not at compiler stage).
 
-cond shall be a preprocessing constant equal to 0 or 1.
-(You should use M\_bool to convert this parameter otherwise).
+'cond' shall be a preprocessing constant equal to 0 or 1.
+(You could use M\_bool to convert).
 
 ##### M\_DELAY1(expr)
 ##### M\_DELAY2(expr) 
 ##### M\_DELAY3(expr)
 ##### M\_DELAY4(expr) 
-##### M\_ID
+##### M\_ID(...)
 
 Delay the evaluation by 1, 2, 3 or 4 steps.
 This is necessary to write macros that are recursive.
@@ -5892,6 +5440,8 @@ Can not be chained.
       ==>
       f(a, b) f(c, d)
 
+OBSOLETE macro
+
 ##### M\_REDUCE(funcMap, funcReduce, args...)
 
 Map the macro funcMap to all given arguments 'args'
@@ -5922,7 +5472,7 @@ and reduce all theses computation with the macro 'funcReduce'.
 
 ##### M\_SEQ(init, end)
 
-Generate a sequence of number from 'init' to 'end'
+Generate a sequence of number from 'init' to 'end' (included)
 
         M_SEQ(1, 6)
         ==>
@@ -6119,6 +5669,7 @@ It can be used to generate less predictable hash values at run-time,
 which may protect against 
 [DOS dictionary attacks](https://events.ccc.de/congress/2011/Fahrplan/attachments/2007_28C3_Effective_DoS_on_web_application_platforms.pdf).
 It shall be unique for a running instance of M\*LIB.
+
 Note that using a random seed is not enough to protect efficiently against
 such attacks. A cryptography secure hash may be also needed.
 If it is not defined, the default is to use the value 0,
@@ -6154,8 +5705,8 @@ limb can be 0.
 ##### size\_t m\_core\_hash (const void *str, size\_t length)
 
 Compute the hash of the binary representation of the data pointer by 'str'
-of length 'length'. 'str' shall have the same alignment restriction
-than a 'size\_t'.
+of length 'length'. 'str' shall have the maximum alignment restriction
+of all types that size is less or equal than 'length'.
 
 
 #### OPERATORS Functions
@@ -6293,6 +5844,8 @@ By putting this after a method for an operator in the oplist,
 it specifies that the first argument of the method shall be a pointer
 to the destination type, rather than the type.
 See M\_API\_2 for an equivalent implementation.
+
+OBSOLETE MACRO
 
 ##### M\_DO\_INIT\_MOVE(oplist, dest, src)
 ##### M\_DO\_MOVE(oplist, dest, src)
@@ -7002,6 +6555,9 @@ Register the work order 'func(data)' to the the synchronization point 'syncBlock
 If no worker is available (and no extraQueue), the work order 'func(data)' will be handled
 by the caller. Otherwise the work order 'func(data)' will be handled
 by an asynchronous worker and the function immediately returns.
+The object(s) referenced by 'data' shall remain available (not destructed) until the
+control flow reaches the next synchronization point (worker\_sync),
+as theses object(s) may be delayed read by other threads until this point.
 
 #### bool worker\_sync\_p(worker\_block\_t syncBlock)
 
@@ -7036,6 +6592,9 @@ These lists shall be exhaustive to capture all needed variables.
 
 This macro needs either GCC (for nested function) or CLANG (for blocks)
 or a C++11 compiler (for lambda and functional) to work.
+
+The next synchronization point (worker\_sync) shall be present in the control flow
+of the current C block.
 
 NOTE1: Even if nested functions are used for GCC, it doesn't generate
 a trampoline and the stack doesn't need to be executable as all variables are captured by the library.

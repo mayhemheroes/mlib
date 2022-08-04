@@ -68,7 +68,7 @@ all:
 	awk '  printit { print } /END_COVERAGE/ { printit=1}' $< > $<.end.c
 	$(CC) $(CPPFLAGS) -E -DNDEBUG -DWITHIN_COVERAGE $< |grep -v '^#' |awk ' /END_COVERAGE/ { printit=0} printit { print } /START_COVERAGE/ { printit=1 }' |perl -p -e "s/;(?![\"'])/;\n/g ; s/}(?![\"'])/}\n/g ; s/{(?![\"'])/{\n/g" > $<.middle.c
 	cat $<.first.c $<.middle.c $<.end.c > $<.c
-	$(CC) $(CPPFLAGS) $(LDFLAGS) -ftest-coverage -fprofile-arcs -g $<.c -o $<.exe
+	$(CC) $(CPPFLAGS) $(LDFLAGS) -ftest-coverage -fprofile-arcs -O -g $<.c -o $<.exe
 	$(LOG_COMPILER) ./$<.exe
 	LANG=C gcov $<.gcno >  `basename $< .c`.synt
 	cat `basename $< .c`.synt
@@ -192,6 +192,7 @@ SYNTHESIS_DATA=	M-ALGO test-malgo.c.c test-malgo.synt			\
 		M-SHARED test-mshared.c.c test-mshared.synt				\
 		M-SNAPSHOT test-msnapshot.c.c test-msnapshot.synt		\
 		M-STRING ../m-string.h test-mstring.synt 				\
+		M-TREE test-mtree.c.c test-mtree.synt 				    \
 		M-TUPLE test-mtuple.c.c test-mtuple.synt 				\
 		M-VARIANT test-mvariant.c.c test-mvariant.synt 			\
 		M-WORKER ../m-worker.h test-mworker.synt		
