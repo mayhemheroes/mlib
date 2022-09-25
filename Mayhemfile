@@ -1,0 +1,5 @@
+project: mlib
+target: string
+
+cmds:
+  - cmd: /string @@
