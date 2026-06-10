@@ -1,0 +1,14 @@
+project: mlib
+# Target name preserved from the original mayhemheroes integration (which compiled
+# example/ex-string01.c and ran the bare `/string @@` CLI fuzzed over a file) so Mayhem run history
+# stays continuous. It is now an in-process, sanitized libFuzzer harness over M*LIB's m-string.h
+# dynamic-string container (string_fgets line reader + the ex-string01 reformat logic) — the same
+# m-string.h parsing/manipulation surface those CLI crashes lived in.
+target: string
+
+testsuite:
+  - file:///mayhem/mayhem/testsuite
+
+cmds:
+  - cmd: /mayhem/fuzz_string
+    libfuzzer: true

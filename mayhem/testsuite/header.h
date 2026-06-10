@@ -1,0 +1,4 @@
+#define FOO \
+    bar
+short line
+#define LONGMACRO_NAME_THAT_IS_QUITE_LONG_AND_EXCEEDS_EIGHTY_COLUMNS_FOR_SURE_X yes \
